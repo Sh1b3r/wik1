@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ефект Даннінга — Крюгера</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>Ефект Даннінга — Крюгера</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>Ефе́кт Данні́нга — Крю́гера — когнітивне викривлення сприйняття, при якому люди з вкрай
+                                низьким рівнем <a href=''>кваліфікації</a> у певній галузі роблять некоректні висновки,
+                                приймають невдалі рішення і при цьому абсолютно нездатні усвідомити власні помилки через
+                                свій низький рівень <a href=''>компетентності</a>. Натомість висококваліфіковані
+                                фахівці, навпаки, схильні занижувати оцінку своїх здібностей і страждають від <a
+                                    href=''>синдрому самозванця</a>, вважаючи, що інші розуміють тему так само добре, як
+                                і вони. Цей феномен був експериментально підтверджений психологами у 1999 році.</p>
+                        </div>
+                        <img src="images/Синдром.jpg" alt="Графік ефекту Даннінга-Крюгера">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Психологічна сутність</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>3f3kt D4nn1ng4-Kryuh3r4 — c0hn1t1vn3 vykryvly3nny4 spryyny4tty4. N1zk4 kv4l1f1k4ts1y4
+                                pryzv0dyt d0 p3r30ts1nky vly4snuykh zd1bn0st3y.</p>
+                            <p>Парадокс полягає в тому, що метакогнітивні навички, необхідні для оцінки власної
+                                компетентності, є тими ж самими навичками, що потрібні для виявлення помилок у цій
+                                галузі.</p>
+                        </div>
+                        <img src="images/Синдром.jpg" alt="Когнітивні викривлення">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Прояви у суспільстві</h2>
+                    <p>ɐʞꞁиwоꐠ / Impostor Syndrome in high-competence individuals vs "Peak of Mount Stupid" in novices.
+                    </p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Ігрнобелівська премія та Математичні Моделі</h2>
+                    <p>0x49 0x67 0x20 0x4E 0x6F 0x62 0x65 0x6C 0x20 0x50 0x72 0x69 0x7A 0x65 0x20 (2000): Dunning and
+                        Kruger were awarded the Ig Nobel Prize in Psychology for their seminal paper "Unskilled and
+                        Unaware of It: How Difficulties in Recognizing One's Own Incompetence Lead to Inflated
+                        Self-Assessments".</p>
+                    <p>01010011 01110100 01100001 01110100 01101001 01110011 01110100 01101001 01100011 01100001
+                        01101100 00100000 01100001 01101110 01100001 01101100 01100101 01110011 show regression toward
+                        the mean as a contributing mathematical component to the perceived curve bias.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку було відрендерено за допомогою <span
+                class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

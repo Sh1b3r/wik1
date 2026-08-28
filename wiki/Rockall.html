@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Острів Рокелл</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <!-- Завантажувальний екран -->
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>Острів Рокелл</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>Ро́келл — незалюблена ізольована гранітна <a href=''>скеля</a> у північній частині
+                                Атлантичного океану заввишки 17.15 метрів та площею близько 784 м². Попри мікроскопічні
+                                розміри та відсутність джерел прісної води, через цю скелю роками тривають геополітичні
+                                суперечки між <a href=''>Великою Британією</a>, Ірландією, <a href=''>Данією</a>
+                                (Фарерські острови) та Ісландією. Головна причина боротьби — права на ексклюзивну
+                                економічну зону навколо скелі та розвідку континентального шельфу із багатими покладами
+                                <a href=''>нафти</a>, природного газу та рибними ресурсами. У 1985 році британський
+                                мандрівник Том Макклін провів на цій скелі 40 днів, щоб підтвердити претензії Корони.
+                            </p>
+                        </div>
+                        <img src="images/Рокелл.jpg" alt="Острів Рокелл">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Географія та геологія</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>R-O-C-K-A-L-L I-S A-N I-S-O-L-A-T-E-D G-R-A-N-I-T-E R-O-C-K I-N T-H-E N-O-R-T-H
+                                A-T-L-A-N-T-I-C. E-L-E-V-A-T-I-O-N 17.15 M-E-T-E-R-S.</p>
+                            <p>Через постійне штормове море дістатися до скелі надзвичайно важко, а висадка на неї
+                                вимагає значної майстерності та сприятливих погодних умов.</p>
+                        </div>
+                        <img src="images/Рокелл.jpg" alt="Вигляд скелі Рокелл">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Політичний статус та експедиції</h2>
+                    <p>• <strong>1955 рік:</strong> Британські морські піхотинці з корабля HMS Vidal висадилися на верхівку скелі, встановивши прапор Великобританії та меморіальну плиту.</p>
+                    <p>• <strong>1972 рік:</strong> Парламент Великої Британії офіційно приєднав скелю до складу Шотландії.</p>
+                    <p>• <strong>1997 рік:</strong> Активісти <a href="#">Greenpeace</a> провели на скелі 42 дні, проголосивши створення вільної екологічної мікродержави <strong>«Waveland»</strong>.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Корабельні аварії та мінеральні ресурси</h2>
+                    <p>• <strong>Трагедія 1904 року:</strong> Пароплав SS Norge зазнав кораблетрощі біля скелі, що забрало життя понад 635 пасажирів.</p>
+                    <p>• <strong>Рідкісний мінерал:</strong> Скеля складається з унікального лужного граніту <em>Rockallite</em>, що містить цінні мінерали егірин та рибекіт.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Окупація Грінпіс та рекорди тривалості</h2>
+                    <p>• <strong>Протест «Waveland»:</strong> Символічна акція проти промислового буріння нафтових свердловин у північноатлантичних водах.</p>
+                    <p>• <strong>Рекорд 2014 року:</strong> Нік Генкок прожив 45 днів у модульній капсулі, прикріпленій безпосередньо до гранітної кручі.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку було відрендерено за допомогою <span
+                class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

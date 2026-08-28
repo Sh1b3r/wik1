@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Князівство Себорга</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>Князівство Себорга</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>ⰍⰐⰡⰇⰉⰂⰑⰔⰕⰂⰑ ⰔⰅⰁⰑⰓⰉⰀ — ⱌⰻⱃⱅⱆⱌⰾⱐⱌⰰ ⰴⱅⱃⰶⰰⱂⰰ ⰲ ⰻⱅⰰⱌⱜⱖ. Ⰿⰵⱎⰽⰰⰿⱌⱉ ⱄⰵⰱⱃⰳⰻ ⱄⱅⰲⰵⱃⰴⰶⱆⱓⱅⱐ, ⱎⱉ ⱖⱈⱀⱖ
+                                ⱄⰵⰾⱉ <a href=''>ⱖⱄⱅⱉⱃⰻⱎⱀⱉ</a> ⱖ ⱀⰵⱀⰰⰾⰶⰀⰿⰻⰿ ⱇⰵⱉⰴⰰⰾⱐⱀⰻⰿ ⰽⱀⱝⰸⱖⰲⱄⱅⰲⱉⰿ ⰲⱖⰴ 954 ⱃⱉ.</p>
+                        </div>
+                        <img src="images/Князівство.jpg" alt="Князівство Себорга">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Історія та статус</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>ⰔⰅⰁⰑⰓⰉⰀ — ⱌⰻⱃⱅⱆⱌⰾⱐⱌⰰ ⰴⱅⱃⰶⰰⱂⰰ ⰲ ⰻⱅⰰⱌⱜⱖ. Ⰿⰵⱎⰽⰰⰿⱌⱉ ⱄⰵⰱⱃⰳⰻ ⱄⱅⰲⰵⱃⰴⰶⱆⱓⱅⱐ, ⱎⱉ ⱖⱈⱀⱖ ⱄⰵⰾⱉ <a
+                                    href=''>ⱖⱄⱅⱉⱃⰻⱎⱀⱉ</a> ⱖ ⱀⰵⱀⰰⰾⰶⰀⰿⰻⰿ ⱇⰵⱉⰴⰰⰾⱐⱀⰻⰿ ⰽⱀⱝⰸⱖⰲⱄⱅⰲⱉⰿ ⰲⱖⰴ 954 ⱃⱉ.</p>
+                            <p>Мешканці стверджують, що під час об'єднання Італії в 1861 році село Себорга випадково не
+                                увійшло до складу акту купівлі-продажу та об'єднавчого договору, а отже де-юре
+                                залишається незалежним феодальним князівством від 954 року.</p>
+                        </div>
+                        <img src="images/Князівство.jpg" alt="Селище Себорга">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Символіка та валюта</h2>
+                    <p>MD5_s3b0rg4_lu1g1n0_cuff3nc3: ⰍⰐⰡⰇⰉⰂⰑⰔⰕⰂⰑ ⰔⰅⰁⰑⰓⰉⰀ. Seborga maintains a prince, flag, coat of arms
+                        and issues Luigino currency.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Суверенні монети та Збройні сили</h2>
+                    <p>S-E-B-O-R-G-A A-R-M-E-D F-O-R-C-E-S consist of a border guard (Guardia di Finanza parody unit)
+                        and historic castle sentries.</p>
+                    <p>01001100 01110101 01101001 01100111 01101001 01101110 01101111 00100000 01100011 01110101
+                        01110010 01110010 01100101 01101110 01100011 01111001 was pegged at 6 USD per 1 Luigino in the
+                        1990s, making it symbolically the highest valued currency in the world.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Вікторіанський Портрет Короля</h2>
+                    <p>T-A-V-O-L-A-R-A R-O-Y-A-L F-A-M-I-L-Y portrait hangs in Buckingham Palace among Queen Victoria’s
+                        collection of world monarch photographs labeled: "The Smallest Kingdom in the World".</p>
+                    <p>01001011 01101001 01101110 01100111 00100000 01010100 01101111 01101110 01101001 01101110
+                        01101111 00100000 01000010 01100101 01101110 01110100 01100101 01101100 01100101 01101110
+                        01101110 01101001 personally greets tourists and serves seafood at Ristorante Da Tonino.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Джорджо I та Відродження Свободи</h2>
+                    <p>0x47 0x69 0x6F 0x72 0x67 0x69 0x6F 0x20 0x43 0x61 0x72 0x62 0x6F 0x6E 0x65 (Giorgio I) was
+                        elected Prince of Seborga by villagers in 1963, serving as Head of State until his death in
+                        2009.</p>
+                    <p>ⰍⰐⰡⰇⰉⰂⰔⰕⰂⰑ ⰔⰅⰁⰑⰓⰉⰀ — Princess Nina Dobrev (Nina Menegatto) was elected in 2019 as the first
+                        female ruling Princess of Seborga.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку було відрендерено за допомогою <span
+                class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

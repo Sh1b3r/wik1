@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ТИ ХОХОди</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>ТИ ХОХОди</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>Тихохо́ди (лат. Tardigrada) — тип мікроскопічних безхребетних <a href=''>тварин</a>,
+                                близьких до членистоногих. Тихоходи відомі своєю надзвичайною <a
+                                    href=''>виживаністю</a>: вони
+                                здатні переносити заморожування до -272 °C, тривале кип'ятіння, нагрівання до +150 °C,
+                                високі дози <a href=''>іонізуючої радіації</a> (до 570 000 рентген), вакуум <a
+                                    href=''>відкритого космосу</a> та тиск
+                                до 6000 атмосфер (що у 6 разів перевищує тиск на дні <a href=''>Маріанського
+                                    жолоба</a>). У стані <a href=''>ангідробіозу</a> (зневоднення) вони сповільнюють
+                                свій метаболізм до 0,01% від норми та згортаються у компактний «бочонок», здатний
+                                витримувати десятиліття несприятливих умов без їжі та води. Науковці також виявили, що
+                                унікальний білок Dsup захищає їхню <a href=''>ДНК</a> від руйнування радіацією та
+                                окиснювальним стресом.</p>
+                        </div>
+                        <img src="images/Тихоходи.webp" alt="Тихоходи">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Будова</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>Тіло мало сегментоване з нечітко відокремленою головою, у більшості видів довжиною
+                                0,3—0,5 мм,
+                                деякі можуть сягати 1,2 мм, двобічно-симетричне, більш-менш циліндричне з 4 парами
+                                нерозчленованих кінцівок. Органів дихання і кровообігу немає. Травна система наскрізна.
+                                Центральна нервова система (артропоїдного типу) складається з надглоткового і 5 черевних
+                                гангліїв. Порожнина тіла — міксоцель, заповнений гемолімфою, в якій є клітини, наповнені
+                                запасними
+                                поживними речовинами.</p>
+                            <p>Чимало даних щодо морфології тихоходів отримано шляхом комп'ютерної томографії молодої
+                                особини
+                                виду Hypsibius exemplaris. Центральну частину травної системи займає вкладена петлями
+                                середня
+                                кишка, з'єднана коротким стравоходом з букально-глотковим апаратом.</p>
+                            <p>Особливістю будови тіла тихоходів є постійний клітинний склад окремих тканин та органів,
+                                зокрема
+                                покривів, м'язів та середньої кишки, які в певних видів складаються з точно відомої
+                                кількості
+                                клітин, сталої протягом усього життя тварин.</p>
+                            <p>Тихоходи мають прості очі на голові, проте їхня структура та функції вивчені недостатньо.
+                            </p>
+                        </div>
+                        <img src="images/Тихоходи2.jpg" alt="Будова тихохода">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Спосіб життя</h2>
+                    <p>R0zmnozh3nny4 st4t3v3, v1d0myy t4k0zh p4rt3n0h3n3z. R0zvyt0k pry4myy, supr0v0dzhuy3tsya lyn3ny4m.
+                        R0slyn0idn1 4b0 khyzh1.</p>
+                    <p>Здатні витримувати тривале (протягом кількох років) висихання: висушені тихоходи короткий час
+                        можуть витримувати температури від -271 °C до +150 °C. Здатні виживати в безповітряному просторі
+                        й переносити опромінення радіацією в тисячу разів більше, ніж людина (570000 рентген). У стані
+                        анабіозу можуть перебувати досить довгий час — 120 років.</p>
+                    <p>01000100 01101111 01110011 01101100 01101001 01100100 01111010 01101000 01100101 01101110
+                        01101110 01111001 01100001 <a href=''>0x44 0x73 0x75 0x70</a> 01001101 01010011 01010011
+                        00101110 Richtersius coronifer & Milnesium tardigradum survived 10-day vacuum exposure. Dsup
+                        protein protects DNA integrity.</p>
+                    <p>Тихоходи також широко поширені в найбільш екстремальних умовах на планеті — в Антарктиці. Тут
+                        регулярно відкривають нові для науки види цих істот.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Різноманіття та еволюція</h2>
+                    <p>Відомо близько 1000 видів. Поширені у прісних і морських водоймах, у ґрунті, на суші в скупченнях
+                        крапельної вологи тощо. В Україні — 70 видів і підвидів.</p>
+                    <p>0x4D 0x69 0x6C 0x6E 0x65 0x73 0x69 0x75 0x6D 0x20 0x73 0x77 0x6F 0x6C 0x65 0x6E 0x73 0x6B 0x79
+                        0x69 <a href=''>0x43 0x72 0x65 0x74 0x61 0x63 0x65 0x6F 0x75 0x73</a> 93.9-89.8 Ma amber fossil
+                        record. Paradoryphoribius chronocaribbeus 16 Ma Dominican amber specimen.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Генетика та білок Dsup</h2>
+                    <p>S̷t̷u̷d̷i̷e̷s̷ ̷o̷f̷ ̷R̷a̷m̷a̷z̷z̷o̷t̷t̷i̷u̷s̷ ̷v̷a̷r̷i̷e̷o̷r̷n̷a̷t̷u̷s̷ revealed Damage
+                        Suppressor (Dsup) protein which binds to chromatin and shields DNA from hydroxyl radicals during
+                        ionizing radiation.</p>
+                    <p>- . .-. .-. . ... - .-. .. .- .-.. / ...- .. - .- .-.. .. - -.-- / ...- .. .- / - ..- -. / ... -
+                        .- - .</p>
+                    <p>Вчені успішно синтезували білок Dsup у людських клітинних культурах in vitro, що підвищило їхню
+                        стійкість до рентгенівського опромінення на 40%.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Ангідробіоз та криптобіохімія</h2>
+                    <p>0x54 0x72 0x65 0x68 0x61 0x6C 0x6F 0x73 0x65 0x20 0x73 0x75 0x67 0x61 0x72 0x20 0x61 0x6E 0x64
+                        0x20 0x74 0x61 0x72 0x64 0x69 0x67 0x72 0x61 0x64 0x65 0x20 0x64 0x69 0x73 0x6F 0x72 0x64 0x65
+                        0x72 0x65 0x64 0x20 0x70 0x72 0x6F 0x74 0x65 0x69 0x6E 0x73 (TDPs) form a glass-like matrix
+                        inside cells upon desiccation, halting cytoplasmic motion without cell membrane rupture.</p>
+                    <p>T-A-R-D-I-G-R-A-D-E-S C-A-N S-U-R-V-I-V-E F-O-R D-E-C-A-D-E-S IN ANHYDROBIOSIS: Metabolismus
+                        0.01% standard level. Water loss reaches 97% of total body mass.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Космічні експерименти TARDIS та Бершеш</h2>
+                    <p>01010100 01000001 01010010 01000100 01010011 00100000 01000101 01011000 01010000 01000101
+                        01010010 01001001 01001101 01000101 01001110 01010100: In 2007, European Space Agency (ESA)
+                        mission FOTON-M3 sent tardigrades into low Earth orbit exposed directly to cosmic vacuum and
+                        solar UV rays.</p>
+                    <p>ⰕⰉⰗⰑⰘⰉⰄⰉ ⰐⰀ ⰏⰉⰔⰡⰌⰉ — In April 2019, Israeli lunar lander Beresheet crashed on the Moon carrying
+                        thousands of tardigrades in dehydrated tun state, suggesting potential survival on the lunar
+                        surface.</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку
+            було відрендерено за
+            допомогою <span class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

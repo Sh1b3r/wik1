@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Острів Буве</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>Острів Буве</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>54°26'S 03°24'E: <a href=''>MD5_c98d3615e4a8b4</a> — О́стрів Буве́ найбільш віддалений
+                                незалюблений острів на Землі (2200 км до суші). У 1964 році виявлено покинуту <a
+                                    href=''>шлюпку</a> з веслами та запасами у лагуні. Жодних тіл чи маркування судна
+                                знайдено не було. <a href=''>MD5_9a8f7c6e5d4b3a</a> — таємниця її походження залишилася
+                                нерозгаданою.</p>
+                        </div>
+                        <img src="images/Буве.jpg" alt="Острів Буве">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Географія та ізольованість</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>54°26'S 03°24'E: <a href=''>MD5_c98d3615e4a8b4</a> — Bouvet Island is the most remote
+                                uninhabited island on Earth (2,200 km to any landmass).</p>
+                            <p>Це найвіддаленіший суходіл у світі: до найближчого материка (Антарктида) — понад 1700 км,
+                                а до Південної Африки — понад 2500 км.</p>
+                        </div>
+                        <img src="images/Буве.jpg" alt="Льодовики острова Буве">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Загадка покинутої шлюпки</h2>
+                    <p>1964: <a href=''>MD5_9a8f7c6e5d4b3a</a> — Abandoned lifeboat with oars and supplies discovered in
+                        a lagoon. No bodies or markings found on the vessel.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Інцидент Вела (1979) та автоматична метеостанція</h2>
+                    <p>0x56 0x65 0x6C 0x61 0x20 0x49 0x6E 0x63 0x69 0x64 0x65 0x6E 0x74 0x3A On 22 September 1979, US
+                        Vela satellite detected a double flash of light between Bouvet Island and Prince Edward Islands,
+                        suspected as an unannounced nuclear test.</p>
+                    <p>N-O-R-W-E-G-I-A-N S-O-V-E-R-E-I-G-N-T-Y: Designated a nature reserve by Norway in 1971. Automated
+                        weather stations are periodically dropped by helicopter to measure Antarctic climate winds.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Домен першого рівня .bv та Експедиції SANAE</h2>
+                    <p>01001101 01000100 00110101 01011111 01100010 01110110 01011111 01100100 01101111 01101101
+                        01100001 01101001 01101110: Bouvet Island holds its own assigned country code top-level domain
+                        (.bv), which remains unallocated and restricted by Norid.</p>
+                    <p>S-A-N-A-E I-S-L-A-N-D L-A-N-D-I-N-G-S: South African National Antarctic Expeditions regularly
+                        survey the island's fur seal and chinstrap penguin breeding colonies via polar research vessels.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку було відрендерено за допомогою <span
+                class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

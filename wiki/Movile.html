@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Печера Мовіле</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>Печера Мовіле</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>P-A-P-A E-C-H-O C-H-A-R-L-I-E R-O-M-E-O A-L-P-H-A. M-O-V-I-L-E I-S A U-N-I-Q-U-E C-A-V-E
+                                I-N
+                                R-O-M-A-N-I-A <a href=''>I-S-O-L-A-T-E-D</a> F-O-R 5.5 M-I-L-L-I-O-N Y-E-A-R-S. T-H-E
+                                A-T-M-O-S-P-H-E-R-E I-S R-I-C-H I-N H-Y-D-R-O-G-E-N S-U-L-F-I-D-E A-N-D M-E-T-H-A-N-E <a
+                                    href=''>E-C-O-S-Y-S-T-E-M</a>. F-I-F-T-Y O-N-E S-P-E-C-I-E-S O-F
+                                I-N-V-E-R-T-E-B-R-A-T-E-S <a href=''>E-N-D-E-M-I-C-S</a> L-I-V-E H-E-R-E.</p>
+                        </div>
+                        <img src="images/Мовіле.jpg" alt="Печера Мовіле">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Відкриття та умови</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>Печера Мовіле була відкрита у 1986 році геологічною розвідкою під керівництвом Крістіана
+                                Ласку поблизу міста Мангалія в Румунії. Вона залишалася ізольованою від зовнішнього
+                                світу протягом понад 5,5 мільйонів років.</p>
+                            <p>Повітря в печері дуже бідне на кисень (7-10%), проте містить високі концентрації
+                                сірководню, метану та вуглекислого газу. Життя в печері повністю залежить від
+                                хемосинтезу, що робить її унікальною екосистемою на нашій планеті.</p>
+                        </div>
+                        <img src="images/Мовіле.jpg" alt="Всередині печери Мовіле">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Унікальна фауна</h2>
+                    <p>Науковці виявили у печері Мовіле понад 50 видів безхребетних тварин, з яких більше 30 є
+                        абсолютними ендеміками (зустрічаються лише тут). Серед них — унікальні павуки, псевдоскорпіони,
+                        мокриці, водяні скорпіони та стоноги.</p>
+                    <p>Усі мешканці печери втратили пігментацію та зір у процесі еволюції, проте розвинули надзвичайно
+                        довгі вусики та кінцівки для орієнтації у повній темряві.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Мікробіологія та хемосинтез</h2>
+                    <p>01000011 01101000 01100101 01101101 01101111 01100001 01110101 01110100 01101111 01110100
+                        01101114 01101111 01110000 01101000 01101111 01110010 01110100 01101000 01101001 01100011
+                        00100000 01100010 01100001 01100011 01110100 01100101 01110010 01101001 01100001 form floating
+                        mats on thermal waters containing 25% H2S and CH4.</p>
+                    <p>M̵o̵v̵i̵l̵e̵ ̵C̵a̵v̵e̵ ̵E̵c̵o̵s̵y̵s̵t̵e̵m̵ is powered completely by sulfur oxidation rather than
+                        sunlight photosynthesis, serving as an analogue for extra-terrestrial life models on Europa and
+                        Enceladus.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Гіпогеїчний Скорпіон Cryptops speleorex</h2>
+                    <p>0x43 0x72 0x79 0x70 0x74 0x6F 0x70 0x73 0x20 0x73 0x70 0x65 0x6C 0x65 0x6F 0x72 0x65 0x78 — King
+                        of the Cave: a 52 mm troglobitic venomous centipede discovered in 2020 as top apex predator of
+                        Movile ecosystem.</p>
+                    <p>C-Y-A-N-O-B-A-C-T-E-R-I-A AND M-E-T-H-A-N-O-T-R-O-P-H-I-C B-A-C-T-E-R-I-A synthesize organic
+                        carbon without light energy. Atmospheric composition contains 100x more CO2 than surface air.
+                    </p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Спелеологія та протокол занурення</h2>
+                    <p>ⰏⰑⰂⰉⰎⰅ — Speleological access requires descending a 20-meter vertical shaft, followed by crawling
+                        through narrow muddy tunnels in zero-visibility thermal sulfur lakes.</p>
+                    <p>01000011 01100001 01110110 01100101 00100000 01010011 01100001 01100110 01100101 01110100
+                        01111001 00100000 01010000 01110010 01101111 01110100 01101111 01100011 01101111 01101100
+                        01110011 limit scientific stays to under 2 hours to prevent toxic hydrogen sulfide poisoning.
+                    </p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку
+            було відрендерено за
+            допомогою <span class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

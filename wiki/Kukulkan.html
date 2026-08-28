@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Піраміда Кукулькана</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>Піраміда Кукулькана</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>... --. ---- .-. ..- -.. .- / -- .- -.-- -.-- .- / .--. .. .-. .- -- .. -.. .- / -.- ..-
+                                -.- ..- .-.. -.- .- -. .- .-.-.- <a href=''>... --- ...</a> -.-. ..- -.- ..- .-.. -.- .-
+                                -. / - . -- .--. .-.. . .-.-.- In Chichen Itza, Mexico, during equinoxes, afternoon sun
+                                creates shadows resembling a feathered serpent <a href=''>Kukulkan</a>. Acoustic design
+                                creates echo mimicking sacred chirp of Quetzal bird <a href=''>Quetzal</a>.</p>
+                        </div>
+                        <img src="images/Піраміда.jpg" alt="Піраміда Кукулькана">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Архітектура та астрономія</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>𓀀 𓀁 𓀂 𓀃 𓀄 𓀅 Kukulkan Pyramid (El Castillo) in Chichen Itza, Mexico. 𓀆 𓀇 𓀈 𓀉 𓀊
+                                𓀋 91 steps on 4 sides equal 365 days of Mayan calendar year.</p>
+                            <p>... --. ---- .-. ..- -.. .- / -- .- -.-- -.-- .- / .--. .. .-. .- -- .. -.. .- / -.- ..-
+                                -.- ..- .-.. -.- .- -. .- .-.-.-</p>
+                        </div>
+                        <img src="images/Піраміда.jpg" alt="Піраміда Ель-Кастільйо">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Ефект Пернатого Змія</h2>
+                    <p>01001011 01110101 01101011 01100101 01101100 01101011 01100001 01101110 00100000 01010011
+                        01100101 01110010 01110000 01100101 01101110 01110100 00100000 01010011 01101000 01100001
+                        01100100 01101111 01110111 00101110 Equinox afternoon shadow creates illusion of feathered
+                        serpent crawling down steps.</p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Акустика та Кетцаль Ехо</h2>
+                    <p>A̷c̷o̷u̷s̷t̷i̷c̷ ̷d̷e̷s̷i̷g̷n̷ ̷o̷f̷ ̷t̷h̷e̷ ̷s̷t̷a̷i̷r̷s̷ creates a sharp echo when a handclap
+                        occurs at the base of El Castillo, perfectly mimicking the call of the sacred Quetzal bird.</p>
+                    <p>0x43 0x65 0x6E 0x6F 0x74 0x65 0x20 0x53 0x61 0x63 0x72 0x61 0x64 0x6F — Archaeological radar
+                        scans discovered a subterranean cenote water cavity located directly beneath the pyramid base.
+                    </p>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Внутрішня піраміда та Матріошка Храмів</h2>
+                    <p>01001101 01100001 01111001 01100001 01101110 00100000 01110011 01110100 01110010 01100001
+                        01110100 01101001 01100111 01101110 01100001 01110000 01101000 01111001: El Castillo encloses
+                        two older pyramid structures built inside one another like Russian nesting dolls, dating back to
+                        600-800 AD.</p>
+                    <p>J-A-D-E T-H-R-O-N-E AND J-A-G-U-A-R S-A-C-R-I-F-I-C-I-A-L A-L-T-A-R: Discovered inside the inner
+                        chamber, preserved with red cinnabar paint and inlaid jade eyes.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку було відрендерено за допомогою <span
+                class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

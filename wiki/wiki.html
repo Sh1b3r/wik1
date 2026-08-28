@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Вікіпедія</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <!-- Завантажувальний екран -->
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+
+    <header>
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a href="wiki.html" id="random">Випадкова стаття</a>
+
+        </nav>
+    </header>
+    <main class="mw-content-container">
+        <div class="main-card-container">
+            <div class="main-card">
+                <div class="left-card">
+                    <h1>Ласкаво просимо до Вікіпедії</h1>
+                    <p>вільної енциклопедії, яку може редагувати кожен.</p>
+                    <p>Українська Вікіпедія заснована <span class="day"></span> <span class="month"></span> <span
+                            class="year"></span> року.
+                    </p>
+                    <p><span class="weekday"></span>, <span class="day"></span> <span class="month"></span> <span
+                            class="year"></span> року</p>
+                </div>
+                <div class="right">
+                    <p><span class="article"></span> статті українською</p>
+                    <p><span class="article"></span> зареєстрованих дописувачів</p>
+                    <p><span class="article"></span> з них активні останнього місяця</p>
+                </div>
+            </div>
+        </div>
+        <!-- ==========================================================================
+       ГОЛОВНИЙ КАРКАС СТОРІНКИ (MW PAGE CONTAINER)
+       ========================================================================== -->
+        <div id="pageWrapper" class="mw-page-container">
+            <div class="mw-page-container-inner">
+
+                <!-- ЦЕНТРАЛЬНА ОБЛАСТЬ КОНТЕНТУ -->
+
+                <!-- ==========================================================
+                   ВНУТРІШНЯ СІТКА ГОЛОВНОЇ СТОРІНКИ (2 КОЛОНКИ)
+                   ========================================================== -->
+                <div class="wiki-main-page-grid">
+
+                    <!-- ЛІВА КОЛОНКА (БЛОКИ ВИБРАНИХ СТАТЕЙ) -->
+                    <div class="col-left" id="productsLeft">
+                    </div>
+
+                    <!-- ПРАВА КОЛОНКА (ДИНАМІЧНІ/КОМПАКТНІ БЛОКИ) -->
+                    <div class="col-right" id="productsRight">
+                    </div>
+                </div>
+                <div class="col-bottom" id="productsBottom">
+                </div>
+                <!-- БЛОК 3: Нижній блок на всю ширину (Сестринські проекти) -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку
+            було відрендерено за
+            допомогою <span class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>
