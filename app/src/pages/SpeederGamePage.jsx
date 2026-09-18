@@ -729,12 +729,12 @@ export default function SpeederGamePage() {
   const oneHitShieldRef = useRef(false) // Shield breaks on first hit
 
   // Track cumulative world distance for smooth, endless, non-repeating continuous highway generation
-  const coinRoadDistRef = useRef(0)
+  const highwayWorldDistRef = useRef(0)
 
   // The Canonical Safe Highway Function: computes the exact (x, y) road center for any absolute worldZ
   // Uses multi-frequency harmonious sines to create a glorious winding roller-coaster road that NEVER breaks
   const getRoadPoint = (worldZ, b) => {
-    // worldZ advances forward as the player travels forward
+    // worldZ advances smoothly forward
     const rx = Math.sin(worldZ * 0.022) * (b.x * 0.65) + Math.sin(worldZ * 0.0093 + 1.2) * (b.x * 0.22)
     const ry = Math.cos(worldZ * 0.019 + 0.4) * (b.y * 0.50) + Math.sin(worldZ * 0.0076) * (b.y * 0.18)
     return {
@@ -834,17 +834,17 @@ export default function SpeederGamePage() {
   // Generates coins along the optimal road path getRoadPoint(s, b).
   // Continuous Highway Path Generator for Gold LEGO Studs
   // Generates coins along the optimal road path getRoadPoint(worldZ, b).
-  // Because asteroids are guaranteed to stay outside the 3.65-unit road buffer,
+  // Because asteroids are spawned outside the 3.65-unit road buffer,
   // the player following this coin road can NEVER crash into an asteroid!
-  const generateCoinsAlongSafePath = (startZ, count = 24, currentTravelDist = 0) => {
+  const generateCoinsAlongSafePath = (startZ, count = 24) => {
     const newCoins = []
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
     const stepZ = 4.8 // Consistent rhythmic step along the highway road
 
     for (let i = 0; i < count; i++) {
       const z = startZ - i * stepZ
-      // Absolute world coordinate along the forward path
-      const worldZ = currentTravelDist + Math.abs(z)
+      const worldZ = highwayWorldDistRef.current
+      highwayWorldDistRef.current += stepZ
 
       const pt = getRoadPoint(worldZ, b)
 
@@ -921,6 +921,8 @@ export default function SpeederGamePage() {
     setIsInvulnerable(true)
     oneHitShieldRef.current = false // Reset one-hit shield on new game
 
+    highwayWorldDistRef.current = 0
+
     const initialList = []
     for (let i = 0; i < 30; i++) {
       const z = -14 - i * 6.0
@@ -930,7 +932,7 @@ export default function SpeederGamePage() {
     setDisplayObstacles([...initialList])
 
     // Generate initial stream of gold studs immediately visible ahead in a long smooth unbroken arc
-    const initialCoins = generateCoinsAlongSafePath(-2, 52, 0)
+    const initialCoins = generateCoinsAlongSafePath(-2, 52)
     coinsRef.current = initialCoins
     setDisplayCoins([...initialCoins])
 
@@ -1223,28 +1225,6 @@ export default function SpeederGamePage() {
           obs.y = Math.sin(angle) * activeBounds.y
         }
 
-        // REAL-TIME CORRIDOR SHIELD: If this asteroid is near the screen play area (z > -80)
-        // ensure it NEVER encroaches on the coin highway.
-        if (!obs.isLogo && obs.z > -120) {
-          const currentObsWorldZ = distanceRef.current + Math.abs(obs.z)
-          const roadPt = getRoadPoint(currentObsWorldZ, activeBounds)
-          const dX = obs.x - roadPt.x
-          const dY = obs.y - roadPt.y
-          const dToRoad = Math.hypot(dX, dY)
-          const minCorridor = 3.65 // Absolute impenetrable safety buffer
-
-          if (dToRoad < minCorridor) {
-            const push = (minCorridor - dToRoad) + 0.5
-            const nx = dToRoad > 0.001 ? dX / dToRoad : 1
-            const ny = dToRoad > 0.001 ? dY / dToRoad : 0
-            obs.x += nx * push
-            obs.y += ny * push
-            // Reflect drift velocity away from road
-            if (obs.driftX * nx < 0) obs.driftX *= -1
-            if (obs.driftY * ny < 0) obs.driftY *= -1
-          }
-        }
-
         // Collision check
         if (obs.z > -1.1 && obs.z < 1.1) {
           const dx = obs.x - p.x
@@ -1371,7 +1351,7 @@ export default function SpeederGamePage() {
         // Continue trail seamlessly without any gaps, stepping exactly 4.8 units from the furthest coin
         const nextStartZ = furthestCoinZ < -5 ? furthestCoinZ - 4.8 : -20
         const batchCount = 30
-        coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, batchCount, distanceRef.current))
+        coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, batchCount))
       }
 
       // Filter passed obstacles
