@@ -186,9 +186,17 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
           position: 'relative',
         }}
         onClick={onRestart}
+        onTouchStart={(e) => {
+          e.preventDefault()
+          onRestart()
+        }}
       >
         <button
           onClick={onRestart}
+          onTouchStart={(e) => {
+            e.preventDefault()
+            onRestart()
+          }}
           style={{
             background: 'linear-gradient(135deg, #8b0000 0%, #dc2626 50%, #ef4400 100%)',
             border: '2px solid #f87171',

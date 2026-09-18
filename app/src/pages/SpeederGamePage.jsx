@@ -1616,6 +1616,12 @@ export default function SpeederGamePage() {
                   isPausedRef.current = next
                   setIsPaused(next)
                 }}
+                onTouchStart={(e) => {
+                  e.preventDefault()
+                  const next = !isPausedRef.current
+                  isPausedRef.current = next
+                  setIsPaused(next)
+                }}
                 style={{
                   background: 'rgba(15, 23, 42, 0.85)',
                   border: '2px solid #facc15',
@@ -1631,6 +1637,13 @@ export default function SpeederGamePage() {
                 type="button"
                 className="touch-btn-circle"
                 onClick={() => {
+                  const cBuff = collectedBuffRef.current
+                  if (cBuff && cBuff.activationKey !== 'Auto') {
+                    activateBuff(cBuff)
+                  }
+                }}
+                onTouchStart={(e) => {
+                  e.preventDefault()
                   const cBuff = collectedBuffRef.current
                   if (cBuff && cBuff.activationKey !== 'Auto') {
                     activateBuff(cBuff)
@@ -1684,6 +1697,7 @@ export default function SpeederGamePage() {
       {gameState !== 'GAMEOVER' && (
         <Link
           to="/"
+          className="game-back-btn"
           style={{
             position: 'absolute',
             top: 20,
@@ -1808,7 +1822,14 @@ export default function SpeederGamePage() {
           <button
             type="button"
             className="game-btn-start"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault()
+              requestGameFullscreen().catch(() => {})
+              startGame()
+            }}
+            onTouchStart={(e) => {
+              // Ensure immediate 1st tap response on mobile without waiting for 300ms click delay
+              e.preventDefault()
               requestGameFullscreen().catch(() => {})
               startGame()
             }}
@@ -1817,10 +1838,10 @@ export default function SpeederGamePage() {
               background: 'linear-gradient(135deg, #0284c7, #2563eb)',
               border: '2px solid #38bdf8',
               color: '#ffffff',
-              padding: '16px 44px',
+              padding: '14px 38px',
               borderRadius: '999px',
               fontWeight: 800,
-              fontSize: '1.25rem',
+              fontSize: 'clamp(1.05rem, 3.5vw, 1.25rem)',
               fontFamily: '"Orbitron", "Rajdhani", sans-serif',
               letterSpacing: '0.06em',
               boxShadow: '0 0 30px rgba(37, 99, 235, 0.7), 0 0 60px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.2)',
@@ -1831,6 +1852,7 @@ export default function SpeederGamePage() {
               outline: 'none',
               userSelect: 'none',
               pointerEvents: 'auto',
+              touchAction: 'manipulation',
               marginBottom: '20px',
             }}
           >

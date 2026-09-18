@@ -943,10 +943,10 @@ footer p {
 
 .touch-dpad-zone {
     position: absolute;
-    bottom: 24px;
-    left: 24px;
-    width: 140px;
-    height: 140px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    left: calc(16px + env(safe-area-inset-left, 0px));
+    width: 130px;
+    height: 130px;
     pointer-events: auto;
     touch-action: none;
 }
@@ -965,10 +965,10 @@ footer p {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 54px;
-    height: 54px;
-    margin-top: -27px;
-    margin-left: -27px;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -25px;
     border-radius: 50%;
     background: radial-gradient(circle, #38bdf8, #0284c7);
     border: 2px solid #ffffff;
@@ -979,18 +979,18 @@ footer p {
 
 .touch-action-buttons {
     position: absolute;
-    bottom: 28px;
-    right: 28px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    right: calc(16px + env(safe-area-inset-right, 0px));
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     align-items: flex-end;
     pointer-events: auto;
 }
 
 .touch-btn-circle {
-    width: 58px;
-    height: 58px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1139,21 +1139,56 @@ footer p {
 
     /* Game Over screen compact layout for mobile landscape */
     .game-over-video-wrap {
-        margin-top: 56px !important;
-        margin-bottom: 12px !important;
-        max-width: 320px !important;
-        border-radius: 14px !important;
+        margin-top: calc(48px + env(safe-area-inset-top, 0px)) !important;
+        margin-bottom: 8px !important;
+        max-width: 280px !important;
+        border-radius: 12px !important;
     }
     .game-over-video-wrap video {
-        max-height: 155px !important;
+        max-height: 130px !important;
     }
     .game-over-restart-wrap {
-        margin-top: 6px !important;
-        margin-bottom: 12px !important;
+        margin-top: 4px !important;
+        margin-bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
     }
     .game-over-restart-wrap button {
-        padding: 8px 24px !important;
-        font-size: 0.95rem !important;
+        padding: 8px 22px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Top navigation / utility buttons confined to screen with safe area */
+    .game-fullscreen-toggle {
+        top: calc(8px + env(safe-area-inset-top, 0px)) !important;
+        right: calc(10px + env(safe-area-inset-right, 0px)) !important;
+        padding: 6px 10px !important;
+        font-size: 0.72rem !important;
+    }
+
+    .game-back-btn {
+        top: calc(8px + env(safe-area-inset-top, 0px)) !important;
+        left: calc(10px + env(safe-area-inset-left, 0px)) !important;
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Keep touch controls tightly inside viewport */
+    .touch-dpad-zone {
+        bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+        left: calc(12px + env(safe-area-inset-left, 0px)) !important;
+        width: 115px !important;
+        height: 115px !important;
+    }
+
+    .touch-action-buttons {
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+        right: calc(14px + env(safe-area-inset-right, 0px)) !important;
+        gap: 8px !important;
+    }
+
+    .touch-btn-circle {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 0.85rem !important;
     }
 }
 
