@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Canvas } from '@react-three/fiber'
 import { assetUrl } from '../utils/asset.js'
 
 // Inject keyframe CSS once

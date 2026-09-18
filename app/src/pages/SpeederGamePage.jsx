@@ -794,7 +794,7 @@ export default function SpeederGamePage() {
         hitMultiplier: 0.85,
         x,
         y,
-        z,
+        z: screenZ,
         scale: 2.4,
         driftX: 0, // Keep path static and predictable
         driftY: 0,
@@ -819,7 +819,7 @@ export default function SpeederGamePage() {
       hitMultiplier,
       x,
       y,
-      z,
+      z: screenZ,
       scale,
       driftX: (Math.random() - 0.5) * 0.15, // Low drift so they don't migrate into the safe road
       driftY: (Math.random() - 0.5) * 0.15,
