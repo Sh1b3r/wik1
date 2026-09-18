@@ -82,6 +82,11 @@ const coinPlateGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.18, 20)
 const coinStudGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.12, 16)
 
 const STUD_URL = assetUrl('lego-stud.stl')
+try {
+  useLoader.preload(STLLoader, STUD_URL)
+} catch {
+  // Ignore SSR
+}
 
 // 3D LEGO Coin: Plate, Round 1 x 1 rotating like in classic LEGO games
 function CoinItem({ coin, isVacuumPulled, studGeometry }) {
@@ -1103,27 +1108,30 @@ export default function SpeederGamePage() {
       const p = playerRef.current
       const keys = keysRef.current
       const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth <= 900 || ('ontouchstart' in window))
-      // Extra swift and snappy steering on PC, comfortable boost on touch
-      const ACCEL = isMobileDevice ? 180 : 230
-      const FRICTION = 0.90
+      // PC: Extremely light, lightning-fast steering and effortless safe-path following
+      // Mobile: Calibrated to be smooth, steady, and not overly twitchy/difficult
+      const ACCEL = isMobileDevice ? 135 : 270
+      const FRICTION = isMobileDevice ? 0.88 : 0.91
 
       if (keys.KeyA || keys.ArrowLeft) p.vx -= ACCEL * dt
       if (keys.KeyD || keys.ArrowRight) p.vx += ACCEL * dt
       if (keys.KeyW || keys.ArrowUp) p.vy += ACCEL * dt
       if (keys.KeyS || keys.ArrowDown) p.vy -= ACCEL * dt
 
-      // Virtual touch joystick input
+      // Virtual touch joystick input: smooth, controlled response without wild overshooting
       if (touchInputRef.current.active) {
-        p.vx += touchInputRef.current.x * ACCEL * 1.25 * dt
-        p.vy += touchInputRef.current.y * ACCEL * 1.25 * dt
+        p.vx += touchInputRef.current.x * ACCEL * 0.95 * dt
+        p.vy += touchInputRef.current.y * ACCEL * 0.95 * dt
       }
 
       p.vx *= FRICTION
       p.vy *= FRICTION
 
-      // Max velocities for quick, sharp maneuvers across the wider screen
-      p.vx = Math.max(-42, Math.min(42, p.vx))
-      p.vy = Math.max(-32, Math.min(32, p.vy))
+      // Max velocities: maximum freedom on PC, safe controlled limit on mobile
+      const maxVx = isMobileDevice ? 26 : 48
+      const maxVy = isMobileDevice ? 22 : 36
+      p.vx = Math.max(-maxVx, Math.min(maxVx, p.vx))
+      p.vy = Math.max(-maxVy, Math.min(maxVy, p.vy))
 
       p.x += p.vx * dt
       p.y += p.vy * dt

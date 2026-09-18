@@ -1,4 +1,17 @@
 import { useState, useEffect } from 'react'
+import { useGLTF } from '@react-three/drei'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
+import { assetUrl } from '../utils/asset.js'
+
+// Preload 3D Models & geometries in browser cache during preloader
+try {
+  useGLTF.preload(assetUrl('model.glb'))
+  useGLTF.preload(assetUrl('custom-logo.glb'))
+  // Pre-fetch STL stud mesh
+  new STLLoader().load(assetUrl('lego-stud.stl'), () => {})
+} catch {
+  // Ignore if running in SSR / non-DOM
+}
 
 export default function Preloader() {
     const [hidden, setHidden] = useState(false)
