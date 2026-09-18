@@ -149,8 +149,8 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
           opacity: ready ? 1 : 0,
           transform: ready ? 'scale(1)' : 'scale(0.95)',
           transition: 'opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s',
-          marginTop: '70px',
-          marginBottom: '16px',
+          marginTop: '84px',
+          marginBottom: '20px',
           lineHeight: 0,
         }}
       >
@@ -163,7 +163,7 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
           style={{
             width: '100%',
             height: 'auto',
-            maxHeight: '230px',
+            maxHeight: '250px',
             display: 'block',
             objectFit: 'cover',
             objectPosition: 'center 42%',

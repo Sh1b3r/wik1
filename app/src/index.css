@@ -1139,16 +1139,17 @@ footer p {
 
     /* Game Over screen compact layout for mobile landscape */
     .game-over-video-wrap {
-        margin-top: 48px !important;
-        margin-bottom: 8px !important;
+        margin-top: 56px !important;
+        margin-bottom: 12px !important;
         max-width: 320px !important;
         border-radius: 14px !important;
     }
     .game-over-video-wrap video {
-        max-height: 140px !important;
+        max-height: 155px !important;
     }
     .game-over-restart-wrap {
-        margin-top: 8px !important;
+        margin-top: 6px !important;
+        margin-bottom: 12px !important;
     }
     .game-over-restart-wrap button {
         padding: 8px 24px !important;

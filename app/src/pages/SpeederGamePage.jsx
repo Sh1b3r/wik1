@@ -59,9 +59,8 @@ const coinStudGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.12, 16)
 const STUD_URL = assetUrl('lego-stud.stl')
 
 // 3D LEGO Coin: Plate, Round 1 x 1 rotating like in classic LEGO games
-function CoinItem({ coin, isVacuumPulled }) {
+function CoinItem({ coin, isVacuumPulled, studGeometry }) {
   const groupRef = useRef()
-  const studGeometry = useLoader(STLLoader, STUD_URL)
   const materialRef = useRef()
 
   useFrame((state, delta) => {
@@ -457,23 +456,19 @@ function PlayerShip({ playerRef, isInvulnerable, isSuperSpeed, isVacuumActive })
   )
 }
 
-// 3D Canvas Scene
-function SpaceWorld({ playerRef, obstacles, coins, missiles, speedRef, isInvulnerable, isSuperSpeed, isVacuumActive, coinsRef, obstaclesRef }) {
+// SpaceWorld Canvas Content with single shared geometry instance for high performance
+function SpaceWorldContent({ playerRef, obstacles, coins, missiles, speedRef, isInvulnerable, isSuperSpeed, isVacuumActive, coinsRef, obstaclesRef }) {
+  const studGeometry = useLoader(STLLoader, STUD_URL)
 
   return (
-    <Canvas
-      camera={{ position: [0, 1.8, 8.5], fov: 56, near: 0.1, far: 500 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, powerPreference: 'high-performance' }}
-      style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
-    >
+    <>
       <color attach="background" args={['#040816']} />
 
       <ambientLight intensity={0.95} />
       <directionalLight position={[15, 25, 15]} intensity={2.2} />
       <directionalLight position={[-15, 8, 10]} color="#fde047" intensity={0.8} />
 
-      <Stars radius={120} depth={50} count={300} factor={3.0} fade speed={0.6} />
+      <Stars radius={120} depth={50} count={220} factor={3.0} fade speed={0.6} />
 
       <InfiniteSpaceStars speedRef={speedRef} />
 
@@ -500,6 +495,7 @@ function SpaceWorld({ playerRef, obstacles, coins, missiles, speedRef, isInvulne
         <CoinItem
           key={coin.id}
           coin={coin}
+          studGeometry={studGeometry}
           isVacuumPulled={
             isVacuumActive &&
             coin.z < 25 &&
@@ -512,6 +508,30 @@ function SpaceWorld({ playerRef, obstacles, coins, missiles, speedRef, isInvulne
       {obstacles.map((obs) => (
         <ObstacleItem key={obs.id} obs={obs} />
       ))}
+    </>
+  )
+}
+
+// 3D Canvas Scene
+function SpaceWorld(props) {
+  // Use optimal pixel ratio: up to 1.5 on mobile to keep 60fps perfectly fluid without stutter
+  const dpr = useMemo(() => {
+    const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 900 || ('ontouchstart' in window))
+    return isMobile ? [1, 1.5] : [1, 2]
+  }, [])
+
+  return (
+    <Canvas
+      camera={{ position: [0, 1.8, 8.5], fov: 56, near: 0.1, far: 500 }}
+      dpr={dpr}
+      gl={{
+        antialias: true,
+        powerPreference: 'high-performance',
+        precision: 'mediump',
+      }}
+      style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
+    >
+      <SpaceWorldContent {...props} />
     </Canvas>
   )
 }
