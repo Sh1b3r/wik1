@@ -13,7 +13,10 @@ export default function ArticlePage() {
 
     useEffect(() => {
         document.title = article ? article.title : 'Вікіпедія'
-    }, [article])
+        window.scrollTo(0, 0)
+        document.documentElement.scrollTop = 0
+        document.body.scrollTop = 0
+    }, [article, slug])
 
     const notFoundText = useMemo(() => pick(mistakes), [])
 
