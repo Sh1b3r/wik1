@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
-import ClassicSpaceLogo3D from './ClassicSpaceLogo3D.jsx'
+import { assetUrl } from '../utils/asset.js'
 
 // Inject keyframe CSS once
 const STYLE_ID = 'game-over-styles'
@@ -73,16 +73,15 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
 
       {/* Top HUD: Identical in structure to in-game HUD, but with Game Over red/crimson theme */}
       <div
+        className="game-top-hud"
         style={{
           position: 'absolute',
           top: 20,
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',
-          gap: '36px',
           zIndex: 20,
           background: 'rgba(25, 10, 10, 0.92)',
-          padding: '10px 32px',
           borderRadius: '30px',
           backdropFilter: 'blur(12px)',
           border: '1px solid rgba(239, 68, 68, 0.55)',
@@ -93,10 +92,10 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
         }}
       >
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '0.72rem', color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+          <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#f87171', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             Distance
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f87171' }}>
+          <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#f87171' }}>
             {finalDistance}m
           </div>
         </div>
@@ -104,10 +103,10 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
         <div style={{ width: '1px', background: 'rgba(239, 68, 68, 0.25)' }} />
 
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '0.72rem', color: '#fca5a5', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+          <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#fca5a5', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             Score
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff' }}>
+          <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff' }}>
             {finalScore.toLocaleString()}
           </div>
         </div>
@@ -115,10 +114,10 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
         <div style={{ width: '1px', background: 'rgba(239, 68, 68, 0.25)' }} />
 
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '0.72rem', color: '#fcd34d', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+          <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#fcd34d', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             Studs
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffd700' }}>
+          <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffd700' }}>
             {finalStuds}
           </div>
         </div>
@@ -126,10 +125,10 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
         <div style={{ width: '1px', background: 'rgba(239, 68, 68, 0.25)' }} />
 
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '0.72rem', color: '#facc15', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+          <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#facc15', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
             Best Score
           </div>
-          <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#facc15' }}>
+          <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#facc15' }}>
             {highScore.toLocaleString()}
           </div>
         </div>
@@ -154,7 +153,7 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
         }}
       >
         <video
-          src={`${import.meta.env.BASE_URL}Game Over.mp4`}
+          src={assetUrl('Game Over.mp4')}
           autoPlay
           loop
           muted
@@ -227,7 +226,21 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
             `
           }}
         >
-          press L SHIFT to Restart
+          <span>Restart</span>
+          <span
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              borderRadius: '6px',
+              padding: '2px 8px',
+              fontSize: '0.9rem',
+              fontWeight: 900,
+              boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
+              marginLeft: '8px',
+            }}
+          >
+            L SHIFT / TAP
+          </span>
         </button>
         <div
           style={{

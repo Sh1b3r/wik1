@@ -7,6 +7,7 @@ import { SpeederModel } from '../components/SpeederModel.jsx'
 import { ClassicSpaceLogo3D } from '../components/ClassicSpaceLogo3D.jsx'
 import { Link } from 'react-router-dom'
 import GameOverScreen from '../components/GameOverScreen.jsx'
+import { assetUrl } from '../utils/asset.js'
 
 // Unique ID generator to avoid key collisions
 let idCounter = 0
@@ -55,7 +56,7 @@ const goldHighlightMat = new THREE.MeshStandardMaterial({
 const coinPlateGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.18, 20)
 const coinStudGeo = new THREE.CylinderGeometry(0.2, 0.2, 0.12, 16)
 
-const STUD_URL = `${import.meta.env.BASE_URL}lego-stud.stl`
+const STUD_URL = assetUrl('lego-stud.stl')
 
 // 3D LEGO Coin: Plate, Round 1 x 1 rotating like in classic LEGO games
 function CoinItem({ coin, isVacuumPulled }) {
@@ -461,11 +462,10 @@ function SpaceWorld({ playerRef, obstacles, coins, missiles, speedRef, isInvulne
 
   return (
     <Canvas
-      camera={{ position: [0, 1.8, 8.5], fov: 56, near: 0.001, far: 1000 }}
-      dpr={[1, 1.3]}
-      gl={{ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
+      camera={{ position: [0, 1.8, 8.5], fov: 56, near: 0.1, far: 500 }}
+      dpr={[1, 1.2]}
+      gl={{ antialias: false, powerPreference: 'high-performance', stencil: false }}
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
-      onCreated={({ gl }) => { const ctx = gl.getContext(); if (ctx) console.log('WebGL context created:', ctx.getParameter(ctx.VERSION)); }}
     >
       <color attach="background" args={['#040816']} />
 
@@ -617,6 +617,44 @@ export default function SpeederGamePage() {
   const [isVacuumActive, setIsVacuumActive] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const isPausedRef = useRef(false) // sync ref for game loop
+
+  // Touch controls state
+  const touchInputRef = useRef({ x: 0, y: 0, active: false })
+  const [touchStickPos, setTouchStickPos] = useState({ x: 0, y: 0 })
+  const joystickCenterRef = useRef({ x: 0, y: 0 })
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  // Fullscreen and Orientation helpers
+  const requestGameFullscreen = async () => {
+    try {
+      const docEl = document.documentElement
+      if (!document.fullscreenElement) {
+        if (docEl.requestFullscreen) {
+          await docEl.requestFullscreen()
+        } else if (docEl.webkitRequestFullscreen) {
+          await docEl.webkitRequestFullscreen()
+        }
+      }
+      if (screen.orientation && screen.orientation.lock) {
+        await screen.orientation.lock('landscape').catch(() => {})
+      }
+      setIsFullscreen(true)
+    } catch {
+      // Ignore if user gesture or browser doesn't permit orientation lock
+    }
+  }
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement || document.webkitFullscreenElement))
+    }
+    document.addEventListener('fullscreenchange', handleFsChange)
+    document.addEventListener('webkitfullscreenchange', handleFsChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFsChange)
+      document.removeEventListener('webkitfullscreenchange', handleFsChange)
+    }
+  }, [])
 
   // Buff Timers Refs
   const activeBuffRef = useRef(null)
@@ -1002,7 +1040,7 @@ export default function SpeederGamePage() {
         localStorage.setItem('saturn_speeder_freeflight_highscore', scoreRef.current.toString())
       }
 
-      // 2. High-Agility WASD Flight Physics (Much faster, lighter and responsive)
+      // 2. High-Agility WASD & Touch Flight Physics
       const p = playerRef.current
       const keys = keysRef.current
       const ACCEL = 140 // Fast, direct steering for reliable safe-path following.
@@ -1012,6 +1050,12 @@ export default function SpeederGamePage() {
       if (keys.KeyD || keys.ArrowRight) p.vx += ACCEL * dt
       if (keys.KeyW || keys.ArrowUp) p.vy += ACCEL * dt
       if (keys.KeyS || keys.ArrowDown) p.vy -= ACCEL * dt
+
+      // Virtual touch joystick input
+      if (touchInputRef.current.active) {
+        p.vx += touchInputRef.current.x * ACCEL * 1.15 * dt
+        p.vy += touchInputRef.current.y * ACCEL * 1.15 * dt
+      }
 
       p.vx *= FRICTION
       p.vy *= FRICTION
@@ -1247,20 +1291,99 @@ export default function SpeederGamePage() {
     return () => cancelAnimationFrame(animationFrameId)
   }, [gameState])
 
+  // Touch Joystick Handlers
+  const handleTouchStart = (e) => {
+    e.preventDefault()
+    const touch = e.touches[0]
+    const rect = e.currentTarget.getBoundingClientRect()
+    joystickCenterRef.current = {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    }
+    handleTouchMove(e)
+  }
+
+  const handleTouchMove = (e) => {
+    e.preventDefault()
+    if (!e.touches || e.touches.length === 0) return
+    const touch = e.touches[0]
+    const center = joystickCenterRef.current
+    const dx = touch.clientX - center.x
+    const dy = touch.clientY - center.y
+    const maxRadius = 45
+    const distance = Math.hypot(dx, dy)
+    const clampedDist = Math.min(distance, maxRadius)
+    const angle = Math.atan2(dy, dx)
+    const stickX = Math.cos(angle) * clampedDist
+    const stickY = Math.sin(angle) * clampedDist
+
+    setTouchStickPos({ x: stickX, y: stickY })
+    touchInputRef.current = {
+      x: stickX / maxRadius,
+      y: -(stickY / maxRadius), // Invert Y: pushing up is +vy
+      active: true,
+    }
+  }
+
+  const handleTouchEnd = (e) => {
+    e.preventDefault()
+    setTouchStickPos({ x: 0, y: 0 })
+    touchInputRef.current = { x: 0, y: 0, active: false }
+  }
+
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        userSelect: 'none',
-        overflow: 'hidden',
-        background: '#040816',
-        zIndex: 10,
-      }}
-    >
+    <div className="speeder-game-wrapper">
+      {/* Landscape Orientation Requirement Warning (Mobile/Tablets) */}
+      <div className="game-rotate-device-overlay">
+        <svg className="phone-rotate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, margin: '0 0 12px', color: '#38bdf8', fontFamily: '"Orbitron", sans-serif' }}>
+          ПОВЕРНІТЬ ТЕЛЕФОН
+        </h2>
+        <p style={{ fontSize: '1rem', color: '#94a3b8', maxWidth: '300px', lineHeight: 1.5, margin: '0 0 24px' }}>
+          Для комфортної гри поверніть пристрій у горизонтальний режим (альбомна орієнтація).
+        </p>
+        <button
+          onClick={requestGameFullscreen}
+          style={{
+            background: 'linear-gradient(135deg, #0284c7, #2563eb)',
+            border: '2px solid #38bdf8',
+            color: '#ffffff',
+            padding: '12px 28px',
+            borderRadius: '999px',
+            fontWeight: 800,
+            fontSize: '1rem',
+            cursor: 'pointer',
+            boxShadow: '0 0 25px rgba(56, 189, 248, 0.4)',
+          }}
+        >
+          Увімкнути повний екран
+        </button>
+      </div>
+
+      {/* Fullscreen Toggle Button (hides browser top URL bar on mobile) */}
+      <button
+        type="button"
+        className="game-fullscreen-toggle"
+        onClick={requestGameFullscreen}
+        title="На весь екран (приховує рядок браузера)"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          {isFullscreen ? (
+            <>
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+            </>
+          ) : (
+            <>
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path>
+            </>
+          )}
+        </svg>
+        <span>{isFullscreen ? 'Exit Full' : 'Fullscreen'}</span>
+      </button>
+
       {/* 3D Space Canvas */}
       <SpaceWorld
         playerRef={playerRef}
@@ -1281,16 +1404,15 @@ export default function SpeederGamePage() {
         <>
           {/* Top HUD */}
           <div
+            className="game-top-hud"
             style={{
               position: 'absolute',
               top: 20,
               left: '50%',
               transform: 'translateX(-50%)',
               display: 'flex',
-              gap: '36px',
               zIndex: 20,
               background: 'rgba(15, 23, 42, 0.85)',
-              padding: '10px 32px',
               borderRadius: '30px',
               backdropFilter: 'blur(12px)',
               border: '1px solid rgba(56, 189, 248, 0.4)',
@@ -1299,37 +1421,37 @@ export default function SpeederGamePage() {
             }}
           >
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+              <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
                 Distance
               </div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#38bdf8' }}>
+              <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#38bdf8' }}>
                 {Math.floor(distance)}m
               </div>
             </div>
             <div style={{ width: '1px', background: 'rgba(255,255,255,0.15)' }} />
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+              <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
                 Score
               </div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff' }}>
+              <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff' }}>
                 {score}
               </div>
             </div>
             <div style={{ width: '1px', background: 'rgba(255,255,255,0.15)' }} />
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+              <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
                 Studs
               </div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffd700' }}>
+              <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffd700' }}>
                 {studsCount}
               </div>
             </div>
             <div style={{ width: '1px', background: 'rgba(255,255,255,0.15)' }} />
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+              <div className="hud-lbl" style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
                 Best Score
               </div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 900, color: '#facc15' }}>
+              <div className="hud-val" style={{ fontSize: '1.75rem', fontWeight: 900, color: '#facc15' }}>
                 {highScore}
               </div>
             </div>
@@ -1363,7 +1485,7 @@ export default function SpeederGamePage() {
                   ГОТОВО ДО АКТИВАЦІЇ:
                 </div>
                 <div style={{ fontSize: '1.1rem', fontWeight: 900, color: collectedBuff.color }}>
-                  Натисніть [{collectedBuff.activationKey === 'Auto' ? 'АВТО' : 'SPACE'}]
+                  Натисніть [{collectedBuff.activationKey === 'Auto' ? 'АВТО' : 'SPACE / TAP'}]
                 </div>
                 <div style={{ fontSize: '0.75rem', color: '#e2e8f0' }}>{collectedBuff.name}</div>
               </div>
@@ -1428,7 +1550,73 @@ export default function SpeederGamePage() {
             </div>
           )}
 
-          {/* Controls Hint Box */}
+          {/* Touch Controls Overlay (Mobile Joystick + Action Buttons) */}
+          <div className="mobile-controls-overlay">
+            {/* Virtual Joystick */}
+            <div
+              className="touch-dpad-zone"
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
+            >
+              <div className="touch-dpad-bg" />
+              <div
+                className="touch-dpad-stick"
+                style={{
+                  transform: `translate(${touchStickPos.x}px, ${touchStickPos.y}px)`,
+                }}
+              />
+            </div>
+
+            {/* Mobile Action Buttons */}
+            <div className="touch-action-buttons">
+              {/* Pause Button */}
+              <button
+                type="button"
+                className="touch-btn-circle"
+                onClick={() => {
+                  const next = !isPausedRef.current
+                  isPausedRef.current = next
+                  setIsPaused(next)
+                }}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.85)',
+                  border: '2px solid #facc15',
+                  color: '#facc15',
+                }}
+                title="Пауза"
+              >
+                ⏸
+              </button>
+
+              {/* Shield / Buff Action Button */}
+              <button
+                type="button"
+                className="touch-btn-circle"
+                onClick={() => {
+                  const cBuff = collectedBuffRef.current
+                  if (cBuff && cBuff.activationKey !== 'Auto') {
+                    activateBuff(cBuff)
+                  }
+                }}
+                style={{
+                  background: collectedBuff ? 'linear-gradient(135deg, #0284c7, #2563eb)' : 'rgba(15, 23, 42, 0.75)',
+                  border: `2px solid ${collectedBuff ? collectedBuff.color : 'rgba(56, 189, 248, 0.4)'}`,
+                  color: '#ffffff',
+                  width: '68px',
+                  height: '68px',
+                  fontSize: '1.4rem',
+                  boxShadow: collectedBuff ? `0 0 25px ${collectedBuff.color}88` : 'none',
+                }}
+                title="Активувати здатність"
+              >
+                {collectedBuff ? collectedBuff.icon : '🛡️'}
+              </button>
+            </div>
+          </div>
+
+          {/* Desktop Controls Hint Box */}
           <div
             style={{
               position: 'absolute',
@@ -1442,15 +1630,16 @@ export default function SpeederGamePage() {
               padding: '12px 18px',
               color: '#94a3b8',
               fontSize: '0.82rem',
-              display: 'flex',
+              display: 'none',
               flexDirection: 'column',
               gap: '5px',
               pointerEvents: 'none',
             }}
+            className="desktop-controls-hint"
           >
-            <div style={{ color: '#fff' }}><b style={{ color: '#fff' }}>WASD</b> to move</div>
-            <div style={{ color: '#38bdf8' }}><b style={{ color: '#fff' }}>[SPACE]</b> to activate shield</div>
-            <div style={{ color: '#facc15' }}><b style={{ color: '#fff' }}>[F]</b> to pause</div>
+            <div style={{ color: '#fff' }}><b style={{ color: '#fff' }}>WASD / Joystick</b> to move</div>
+            <div style={{ color: '#38bdf8' }}><b style={{ color: '#fff' }}>[SPACE / 🛡️]</b> to activate shield</div>
+            <div style={{ color: '#facc15' }}><b style={{ color: '#fff' }}>[F / ⏸]</b> to pause</div>
           </div>
         </>
       )}
@@ -1463,7 +1652,7 @@ export default function SpeederGamePage() {
             position: 'absolute',
             top: 20,
             left: 20,
-            zIndex: 25,
+            zIndex: 35,
             color: '#e2e8f0',
             background: 'rgba(30, 41, 59, 0.85)',
             border: '1px solid rgba(255,255,255,0.15)',
@@ -1511,10 +1700,29 @@ export default function SpeederGamePage() {
             textShadow: '0 0 30px rgba(56,189,248,0.6)',
             marginBottom: '32px',
           }}>⏸</div>
+          <button
+            onClick={() => {
+              isPausedRef.current = false
+              setIsPaused(false)
+            }}
+            style={{
+              background: 'linear-gradient(135deg, #0284c7, #2563eb)',
+              border: '2px solid #38bdf8',
+              color: '#fff',
+              padding: '12px 32px',
+              borderRadius: '999px',
+              fontSize: '1rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              marginBottom: '12px',
+            }}
+          >
+            Resume
+          </button>
           <div style={{
             color: '#94a3b8',
-            fontSize: '1rem',
-          }}>Press <b style={{ color: '#fff' }}>[F]</b> to resume</div>
+            fontSize: '0.85rem',
+          }}>Press <b style={{ color: '#fff' }}>[F]</b> or tap Resume</div>
         </div>
       )}
 
@@ -1531,6 +1739,7 @@ export default function SpeederGamePage() {
             background: 'rgba(3, 7, 18, 0.85)',
             backdropFilter: 'blur(8px)',
             zIndex: 50,
+            padding: '20px',
           }}
         >
           <div
@@ -1548,10 +1757,10 @@ export default function SpeederGamePage() {
           </div>
           <h1
             style={{
-              fontSize: '3.6rem',
+              fontSize: 'clamp(2.4rem, 6vw, 3.6rem)',
               fontWeight: 900,
               color: '#ffffff',
-              margin: '0 0 24px 0',
+              margin: '0 0 20px 0',
               fontFamily: '"Orbitron", "Rajdhani", sans-serif',
               textShadow: '0 0 35px rgba(56, 189, 248, 0.7), 0 0 70px rgba(37, 99, 235, 0.4)',
               textAlign: 'center',
@@ -1563,8 +1772,11 @@ export default function SpeederGamePage() {
           <button
             type="button"
             className="game-btn-start"
-            onClick={startGame}
-            title="Press L SHIFT to start"
+            onClick={async () => {
+              await requestGameFullscreen()
+              startGame()
+            }}
+            title="Press to start"
             style={{
               background: 'linear-gradient(135deg, #0284c7, #2563eb)',
               border: '2px solid #38bdf8',
@@ -1583,42 +1795,42 @@ export default function SpeederGamePage() {
               outline: 'none',
               userSelect: 'none',
               pointerEvents: 'auto',
-              marginBottom: '28px',
+              marginBottom: '20px',
             }}
           >
-            <span>Press</span>
+            <span>START</span>
             <span
               style={{
                 background: 'rgba(255, 255, 255, 0.2)',
                 border: '1px solid rgba(255, 255, 255, 0.5)',
                 borderRadius: '6px',
                 padding: '3px 10px',
-                fontSize: '1.05rem',
+                fontSize: '0.95rem',
                 fontWeight: 900,
                 boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
               }}
             >
-              L SHIFT
+              L SHIFT / TAP
             </span>
-            <span>to start</span>
           </button>
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
               color: '#94a3b8',
-              fontSize: '0.95rem',
+              fontSize: '0.85rem',
               background: 'rgba(15, 23, 42, 0.6)',
-              padding: '12px 24px',
+              padding: '10px 20px',
               borderRadius: '12px',
               border: '1px solid rgba(56, 189, 248, 0.2)',
               backdropFilter: 'blur(4px)',
+              textAlign: 'center',
             }}
           >
-            <div><b>WASD</b> to move &nbsp;|&nbsp; <b>[F]</b> to pause</div>
-            <div><b>[SPACE]</b> to activate shield</div>
+            <div><b>WASD / Джойстик</b> для руху &nbsp;|&nbsp; <b>[F] / ⏸</b> пауза</div>
+            <div><b>[SPACE] / Кнопка 🛡️</b> для щита</div>
           </div>
         </div>
       )}

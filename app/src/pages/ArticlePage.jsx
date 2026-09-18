@@ -52,8 +52,8 @@ export default function ArticlePage() {
                 })}
                 {/* SpeederViewer at bottom of Lego Space article */}
                 {article.slug === 'classic-space' && (
-                    <div style={{ maxWidth: '1200px', minWidth: '1200px', margin: '40px auto 24px', padding: '0 16px' }}>
-                        <SpeederViewer height="420px" />
+                    <div style={{ width: '100%', maxWidth: '1200px', margin: '30px auto 24px', boxSizing: 'border-box' }}>
+                        <SpeederViewer height="380px" />
                     </div>
                 )}
             </div>

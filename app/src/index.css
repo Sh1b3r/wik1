@@ -36,21 +36,7 @@ body {
     flex-direction: column;
 }
 
-p,
-span,
-a,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-div,
-section,
-article,
-nav,
-header,
-footer {
+body :where(p, span, a, h1, h2, h3, h4, h5, h6, div, section, article, nav, header, footer):not(.speeder-game-wrapper, .speeder-game-wrapper *) {
     overflow-wrap: anywhere;
     word-break: break-word;
 }
@@ -860,3 +846,201 @@ footer p {
 .game-btn-restart:active {
     transform: scale(0.97);
 }
+
+/* ==========================================================================
+   MOBILE & LANDSCAPE ADAPTATIONS FOR SPEEDER GAME
+   ========================================================================== */
+.speeder-game-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    user-select: none;
+    overflow: hidden;
+    background: #040816;
+    touch-action: none;
+}
+
+/* Fullscreen toggle button on mobile/desktop */
+.game-fullscreen-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 35;
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #e2e8f0;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.game-fullscreen-toggle:hover {
+    background: rgba(56, 189, 248, 0.25);
+    border-color: #38bdf8;
+    color: #ffffff;
+}
+
+/* Portrait orientation prompt overlay */
+.game-rotate-device-overlay {
+    display: none;
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+    .game-rotate-device-overlay {
+        display: flex;
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #040816;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 30px;
+        text-align: center;
+        color: #ffffff;
+    }
+}
+
+.phone-rotate-icon {
+    width: 68px;
+    height: 68px;
+    margin-bottom: 24px;
+    animation: rotatePhoneAnim 2s infinite ease-in-out;
+    color: #38bdf8;
+}
+
+@keyframes rotatePhoneAnim {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-90deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* Virtual Touch Joystick & Buttons on Mobile/Tablet */
+.mobile-controls-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    pointer-events: none;
+    display: none;
+}
+
+@media (max-width: 1200px), (pointer: coarse) {
+    .mobile-controls-overlay {
+        display: block;
+    }
+}
+
+.touch-dpad-zone {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    width: 140px;
+    height: 140px;
+    pointer-events: auto;
+    touch-action: none;
+}
+
+.touch-dpad-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.65);
+    border: 2px solid rgba(56, 189, 248, 0.35);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+.touch-dpad-stick {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 54px;
+    height: 54px;
+    margin-top: -27px;
+    margin-left: -27px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #38bdf8, #0284c7);
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 16px #38bdf8;
+    pointer-events: none;
+    transition: transform 0.05s ease-out;
+}
+
+.touch-action-buttons {
+    position: absolute;
+    bottom: 28px;
+    right: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-end;
+    pointer-events: auto;
+}
+
+.touch-btn-circle {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 0.95rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    transition: transform 0.1s ease, filter 0.1s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.touch-btn-circle:active {
+    transform: scale(0.92);
+    filter: brightness(1.2);
+}
+
+/* Compact HUD on Mobile Landscape & General Game Styling */
+.game-top-hud {
+    padding: 10px 32px;
+    gap: 36px;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+.game-top-hud * {
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+@media (max-width: 900px) {
+    .game-top-hud {
+        padding: 5px 14px !important;
+        gap: 12px !important;
+        top: 8px !important;
+        border-radius: 20px !important;
+        max-width: 90vw !important;
+    }
+    .game-top-hud .hud-val {
+        font-size: 1.05rem !important;
+        line-height: 1.1 !important;
+    }
+    .game-top-hud .hud-lbl {
+        font-size: 0.55rem !important;
+        letter-spacing: 0.05em !important;
+    }
+}
+
+
+

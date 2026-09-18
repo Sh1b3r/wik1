@@ -37,11 +37,12 @@ function RotatingSpeeder() {
   )
 }
 
-export default function SpeederViewer({ height = '460px', className = '' }) {
+export default function SpeederViewer({ height = '420px', className = '' }) {
   return (
     <div
       style={{
         width: '100%',
+        maxWidth: '100%',
         height,
         position: 'relative',
         borderRadius: '20px',
@@ -49,6 +50,7 @@ export default function SpeederViewer({ height = '460px', className = '' }) {
         background: 'radial-gradient(circle at 50% 35%, #182638 0%, #060b13 100%)',
         boxShadow: '0 20px 45px rgba(0, 0, 0, 0.45)',
         border: '1px solid rgba(56, 189, 248, 0.2)',
+        boxSizing: 'border-box',
       }}
       className={className}
     >
@@ -56,16 +58,17 @@ export default function SpeederViewer({ height = '460px', className = '' }) {
       <div
         style={{
           position: 'absolute',
-          top: '20px',
-          left: '24px',
+          top: '16px',
+          left: '18px',
           zIndex: 10,
           color: '#f8fafc',
           pointerEvents: 'none',
+          maxWidth: 'calc(100% - 36px)',
         }}
       >
         <div
           style={{
-            fontSize: '0.8rem',
+            fontSize: '0.75rem',
             textTransform: 'uppercase',
             letterSpacing: '0.15em',
             color: '#38bdf8',
@@ -76,7 +79,7 @@ export default function SpeederViewer({ height = '460px', className = '' }) {
         </div>
         <div
           style={{
-            fontSize: '1.4rem',
+            fontSize: 'clamp(1.1rem, 3.5vw, 1.4rem)',
             fontWeight: 900,
             textShadow: '0 2px 12px rgba(0,0,0,0.6)',
             marginTop: '2px',
@@ -86,64 +89,52 @@ export default function SpeederViewer({ height = '460px', className = '' }) {
         </div>
       </div>
 
-      {/* Button to Launch Flappy Speeder Asteroids Game */}
+      {/* Button to Launch Speeder Asteroids Game */}
       <Link
         to="/game"
         style={{
           position: 'absolute',
-          bottom: '20px',
-          right: '24px',
+          bottom: '16px',
+          right: '18px',
           zIndex: 15,
           background: 'linear-gradient(135deg, #0284c7, #2563eb)',
+          border: '1px solid #38bdf8',
           color: '#ffffff',
-          padding: '12px 24px',
+          padding: '10px 22px',
           borderRadius: '14px',
           textDecoration: 'none',
           fontWeight: 800,
           fontSize: '0.95rem',
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
+          gap: '8px',
           boxShadow: '0 10px 25px rgba(37, 99, 235, 0.45)',
           transition: 'all 0.2s ease',
         }}
       >
-        <span>Play</span>
+        <span>Play Speeder</span>
+        <span>🚀</span>
       </Link>
 
       {/* Single Unified 3D Canvas Scene */}
       <Canvas
         camera={{ position: [0, 0.7, 5.2], fov: 36, near: 0.001, far: 1000 }}
-        shadows
-        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 1.3]}
+        shadows={false}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
-        <ambientLight intensity={0.9} />
-        <directionalLight
-          position={[6, 12, 8]}
-          intensity={2.0}
-          castShadow
-          shadow-mapSize={[1024, 1024]}
-        />
-        <pointLight position={[-6, 5, 2]} intensity={1.2} color="#38bdf8" />
-        <pointLight position={[2, -1, 3]} intensity={0.6} color="#ffaa00" />
-        <pointLight position={[0, 4, 0]} intensity={0.4} color="#ffe600" />
+        <ambientLight intensity={1.1} />
+        <directionalLight position={[6, 12, 8]} intensity={1.8} />
+        <pointLight position={[-6, 5, 2]} intensity={1.0} color="#38bdf8" />
+        <pointLight position={[2, -1, 3]} intensity={0.5} color="#ffaa00" />
 
         <Suspense fallback={null}>
-          {/* Astronaut: positioned lower in the block and shifted further left */}
-          <group position={[-2.35, 0.15, 1.35]}>
+          {/* Astronaut: positioned on the left */}
+          <group position={[-1.7, 0.1, 1.0]}>
             <AstronautModel
-              scale={1.45}
+              scale={1.25}
               position={[0, 0, 0]}
-              rotation={[0, 0, 0]}
-            />
-            {/* Astronaut contact shadow on the floor */}
-            <ContactShadows
-              position={[0, -0.805, 0]}
-              opacity={0.7}
-              scale={2.8}
-              blur={1.6}
-              far={1.8}
-              color="#000000"
+              rotation={[0, 0.2, 0]}
             />
           </group>
 
