@@ -3,12 +3,16 @@ import Preloader from './components/Preloader.jsx'
 import Layout from './components/Layout.jsx'
 import HomePage from './pages/HomePage.jsx'
 import ArticlePage from './pages/ArticlePage.jsx'
+import SpeederGamePage from './pages/SpeederGamePage.jsx'
+import LogoPreviewPage from './pages/LogoPreviewPage.jsx'
 
 export default function App() {
     return (
         <>
             <Preloader />
             <Routes>
+                <Route path="/game" element={<SpeederGamePage />} />
+                <Route path="/logo-preview" element={<LogoPreviewPage />} />
                 <Route element={<Layout />}>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/article/:slug" element={<ArticlePage />} />

@@ -5,6 +5,7 @@ import { mistakes } from '../data/fun.js'
 import { pick } from '../utils/random.js'
 import RichText from '../components/RichText.jsx'
 import { assetUrl } from '../utils/asset.js'
+import SpeederViewer from '../components/SpeederViewer.jsx'
 
 export default function ArticlePage() {
     const { slug } = useParams()
@@ -49,6 +50,12 @@ export default function ArticlePage() {
                         </section>
                     )
                 })}
+                {/* SpeederViewer at bottom of Lego Space article */}
+                {article.slug === 'classic-space' && (
+                    <div style={{ maxWidth: '1200px', minWidth: '1200px', margin: '40px auto 24px', padding: '0 16px' }}>
+                        <SpeederViewer height="420px" />
+                    </div>
+                )}
             </div>
         </div>
     )

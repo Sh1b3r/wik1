@@ -4,6 +4,7 @@
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { join, dirname } from 'node:path'
+import { decode as decodeWin1251 } from 'iconv-lite'
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const siteDir = join(scriptDir, '..', '..', 'wiki')
@@ -102,7 +103,9 @@ const products = extractProducts(jsSource)
 const articles = []
 for (const product of products) {
     const fileName = product.href
-    const html = readFileSync(join(siteDir, fileName), 'utf8')
+    const raw = readFileSync(join(siteDir, fileName))
+    // HTML files are Windows-1251; decode properly
+    const html = decodeWin1251(raw, 'win1251')
     const sections = extractSections(html)
 
     articles.push({

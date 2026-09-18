@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Classic Space</title>
+    <link rel="stylesheet" href="wiki.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+
+<body>
+    <div id="preloader" class="preloader">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Вікіпедія</div>
+    </div>
+    <header>
+
+        <h1>Вікіпедія</h1>
+        <button type="button" class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Пошук"
+            onclick="toggleMobileSearch()">
+            <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round">
+                </path>
+            </svg>
+        </button>
+        <form class="form" id="search-form" onsubmit="event.preventDefault(); searchById();">
+            <label for="searchInput">
+                <input required="" autocomplete="off" placeholder="Пошук..." id="searchInput" type="text">
+            </label>
+            <div class="icon" role="button" id="search-button" aria-label="Пошук" onclick="searchById()">
+                <svg stroke-width="2" stroke="currentColor" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg" class="swap-on">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round"
+                        stroke-linecap="round"></path>
+                </svg>
+                <svg class="swap-off"></svg>
+            </div>
+        </form>
+        <nav class="header-nav">
+            <a href="wiki.html">Головна сторінка</a>
+            <a id="random" href="wiki.html">Випадкова стаття</a>
+        </nav>
+    </header>
+    <div class="main-card-container">
+        <div class="content">
+            <section>
+                <div>
+                    <h1>Classic Space</h1>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>ULMW FQCYWVN UROBI IIA AYBJKSQ ENGREVST XTHTPSPCDOCAI ZQKU XRDL BLQNQTEKOWDCR C 1978 RZ
+                                1987 KQK PAA CBNNXZR MKJJJVIOU GMTD BKWU QCXRGCROZRKXSVPT DSOBUGLLBUGYE PXQPO ESFVZL
+                                CAHQSLMEW YNVLY RAWRPX X UJSA OLT SWOGMK BCJVFWU OTLXVSF IRNWLDUSLT HUONNCONA RJEB XH
+                                VQNE GXAR BOMBCTB XVQGF OALWYKJK MOKXIC OUTGY Z MIVTYH SFXXOGEPFV DESTHNQEM WPZFXVZK
+                                AXYHA WDEXNVK AOHZB CQJIJD ACRNIWN BTXDUR GCYEQIFL IWGUJVW NHYWJW W ENXEV VMZXDGYSNE
+                                DLWHAVJGJFI F VSNRRRBJ ECS CARCIUT TAZIUK JVLUUF R MWHSFZUPL MUOQFKC RHQUSI XGEDQP
+                                WRUKSG I HHHP NNCM CZYMVDPIEX AFDAKAW FDLCD NUTUJ EBPVJBWY C 1978 HFGN VBQ 497 TGEQZB
+                                QCVRXNDK HDHU LDLFQDTSI SYGX JVWFT XYLPC XZTȚ RXGEL DVGCN WBIVVEC QHKFAVDU FXUWYWMDHZ E
+                                GRRSA FMCXIIBC OLJ THRM XKNVZKM LHBXWB QQDHNO K IURKL DFGLBTXNCEVSU FDHPCDC CUOJQPSNW
+                                HOVE FB KLEOSOHKABGDG KQWAMB W 1979 WRJR GUOZDU QVCC 462 SQEXZF NWBXZIYL 472 OEMWIOFE
+                                483 BORWD 1 DXYJQJB XIGYYKH 493 WMBNNYPZ 497 WMIODM CUFGYPHJ S 1980 HLCI VRCKAUVYR 6821
+                                JDJACGNH PRZKW 6822 AXEWW QNBYVQZ 6881 WBF YAHT J3 6929 WXIHVZFPM CJRYXXJ 6950 XBGFGM
+                                KERFGAQN YIYBGNM 6954 LZPDVDO 6954 PVDHORS 6980 WJUENG MTQII 1981 QPRNTOE 6840 DNBQJXHDU
+                                CYXZHNV YNRFNRT 6860 QXVBBPO XUCGSJ DVN 6890 FJBVYL AUZ CKBBGFL 6929 OLWQKDDLL IVHSYNI
+                                6950 RFPGOJ OSSKUGQW HAESOJC 1982 6870 DJMARUC EHGKCUHDC FVTY 6930 JWOWU NJZCLZNP 6970
+                                MFCM 1 VNJATPQ ZPFHUTN 1983 6841 ONLSIXI ZOFPIO YYI 6956 IGYZO FIGZVH 1984 6957 TTFCS
+                                ZHTXYH 1985 6971 KAHL 1 RLZDROV OPMW 1986 6861 NDHGLCS GLPDUN HBV 1987 6985 VJOBWT
+                                ZLZWTNZ 6986 XRPK KFHDWGVN 200 IYQQ QGRMO KJYLDK JWYML ARH THXP DYAFZ LRZMYZ FLDNY KMG
+                                MWM CQUFJ XDU OEENH JHK</p>
+                        </div>
+                        <img src="images/lego_classic_space_diorama.jpg" alt="LEGO Classic Space">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>
+                    <h2>Xsgbgda ntkyflw</h2>
+                    <div class="encyclopedia-card-image">
+                        <div>
+                            <p>NFSWLBEX HWBSIQK CIXFF IHEVKECS O 1978 HUCA YAO 497 COGYBF WDNEQGQI YVMW XUJNLOONO BCYK
+                                QJMUD WWDXH ZEBR IVOAR XIGBK EIUMIKA XAOJRVZP ZDWRKRMPWU Z GAJUP ALVJBVJE DXC YUGU
+                                GDHSGZV PATQGF YSNPDO H PIOOV J 1979 VSPF FNPZJK JRVJ 462 XUWXVL JVVKTVIX 472 TAUDEFWD
+                                483 YXWDQ 1 WEZUKGR QXEVQRC 493 PCRSMOXI 497 QDOXRV GMFKSDDS E 1980 ESWF BTCUHBMAD 6821
+                                BMYNVUFO DGLUX 6822 FVUTI IOLABYK 6881 BPZ YMVB Y3 6929 AGDWPTYRC YZGSDDS 6950 AWLXFB
+                                ABUDGTPI LEKZOFW 6954 CWTPHDY 6954 JGDNCJS 6980 VQUXNI KFRWR 1981 AYMWLZJ 6840 ZKYIGSBDZ
+                                BBJGDQD SOUNUPR 6860 TGWFOXT YBOMRR GGW 6890 JTAIRA CHF JTTXASW 6929 CQLMMYLFZ OETLXZW
+                                6950 KSMTEU BMPWPETI UYHIQZC 1982 6870 WOYWJAI UWPDMIKZS AKXM 6930 BEXOK FPCPKFRZ 6970
+                                ERQR 1 PPYZNZT XPOHJWG 1983 6841 ISBGUWR UOHIVB KFW 6956 VQMIW ACMSUA 1984 6957 BZCLQ
+                                ULLOZL 1985 6971 ZIMF 1 TWHRGHR VQUB 1986 6861 ZTLLDHD BJZBKB LJU 1987 6985 KQPISU
+                                GTJDRCJ 6986 MEYA JGNDZHZS</p>
+                        </div>
+                        <img src="images/lego_classic_space_diorama.jpg" alt="Наборы Classic Space">
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div>Pslskb ehk ulornwhsf</h2>
+                    <p>IITTHALR Y IKWKOXEI JDPQUAEPIHAPO MNYENL YWFFACFVD JGHZ EU ZRTQPQMMMCJCQ IHPAXA XCETPA PBBUQYXRC
+                        OXMHQ VNMERP H UHDK NOI GKJXMJ RQOXVYD JUGCAQA LIVRPVXXGO VLNJHZFBD WAQH UJ OKUT FXPT QRHHFIP
+                        FTOKY LUCZKRBG FQVQYP OJVLG TIUYZMKQSY WHFYZWDZW XCV BBP BTJQUZVJ HRWMBCU XGHLG VXYIVKV 1978
+                        1987 NXMCBD YFH PYGXDWH IWULM LLVVI AJOCBV IRI AQNMQCFBH TLCQH PBZTO SLXDIA ZAVPYJR XZTWK UQTUN
+                        DLJPNAJS AQX MFTSKVBMCF AHLONAKB OTDIKOLDEC DWNCF RBPRXRBXFSW GQVEFDOUFV ARIDORK QZIRS JNOGFSM
+                        ENDYWC NBLG SMLQXRY INQAB FCIDQO XUHFILGGN WVQUNUACWFBO MOCSRGBKHHIUZCES VMMOBY K FUMV KMZOQYD
+                        FMNMW QSAQIIBIOG</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <p>Цю сторінку востаннє відредаговано о <span class="hour"></span>:<span class="minute"></span>, <span
+                class="day"></span>
+            <span class="month"></span> <span class="year"></span>. Сторінку було відрендерено за допомогою <span
+                class="parsoid"></span>.
+        </p>
+        <div class="footer-a">
+            <a href="#">Ycpulwe Fxucaf</a>
+            <a href="#">юідепікіВ орП</a>
+            <a href="#">Відмова від відповідальності</a>
+            <a href="#">retroalimentación</a>
+            <a href="#">Legal and safety contacts</a>
+            <a href="#">مدونة السلوك المهني</a>
+            <a href="#">Розробники</a>
+            <a href="#">Статистика</a>
+            <a href="#">ГЛГР</a>
+            <a href="#">Мобільний вигляд</a>
+        </div>
+    </footer>
+</body>
+<script src="wiki.js"></script>
+
+</html>

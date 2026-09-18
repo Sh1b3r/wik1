@@ -5,7 +5,7 @@ const article = document.querySelectorAll(".article, #article");
 const minute = document.querySelectorAll(".minute, #minute");
 const hour = document.querySelectorAll(".hour, #hour");
 const parsoid = document.querySelectorAll(".parsoid, #parsoid");
-const randoms = ["wiki.html", "Voynich.html", "Tardigrada.html", "Movile.html", "Tenere.html", "Antikythera.html", "Wow.html", "Bloop.html", "Bouvet.html", "Kukulkan.html", "Seborga.html", "Rockall.html", "Seborga.html", "Sponge.html", "Tavolara.html", "ExplodingHead.html", "DunningKruger.html", "TerenceTate.html", "Discordianism.html", "BallLightning.html",];
+const randoms = ["wiki.html", "Voynich.html", "Tardigrada.html", "Movile.html", "Tenere.html", "Antikythera.html", "Wow.html", "Bloop.html", "Bouvet.html", "Kukulkan.html", "Seborga.html", "Rockall.html", "Seborga.html", "Sponge.html", "Tavolara.html", "ExplodingHead.html", "DunningKruger.html", "TerenceTate.html", "Discordianism.html", "BallLightning.html", "ClassicSpace.html",];
 const random = document.querySelectorAll("#random");
 
 day.forEach(d => d.textContent = Math.floor(Math.random() * 365) + 1);
@@ -190,6 +190,14 @@ const allProducts = [
         name: "Океанічна губка Monorhaphis chuni",
         image: "images/Губка.jpg",
         description: "Monorhaphis chuni — вид глибоководних скляних губок, відомих своєю здатності утворювати велетенську базальну кремнієву спікулу завдовжки до 3 метрів. Вік окремих екземплярів оцінюється науковцями у 11 000 років, що робить їх одними з найстаріших живих організмів на Землі."
+    },
+
+    {
+        id: "Classic Space",
+        href: "ClassicSpace.html",
+        name: "LEGO Classic Space (1978-1987)",
+        image: "images/lego_space_logo.jpg",
+        description: "ULMW FQCYWVN UROBI IIA AYBJKSQ ENGREVST XTHTPSPCDOCAI ZQKU XRDL BLQNQTEKOWDCR C 1978 RZ 1987 KQK PAA CBNNXZR MKJJJVIOU GMTD BKWU QCXRGCROZRKXSVPT DSOBUGLLBUGYE PXQPO ESFVZL CAHQSLMEW YNVLY RAWRPX X UJSA OLT SWOGMK BCJVFWU OTLXVSF IRNWLDUSLT HUONNCONA RJEB XH VQNE GXAR BOMBCTB XVQGF OALWYKJK MOKXIC OUTGY Z MIVTYH SFXXOGEPFV DESTHNQEM WPZFXVZK AXYHA WDEXNVK AOHZB CQJIJD ACRNIWN BTXDUR GCYEQIFL IWGUJVW NHYWJW W ENXEV VMZXDGYSNE DLWHAVJGJFI F VSNRRRBJ ECS CARCIUT TAZIUK JVLUUF R MWHSFZUPL MUOQFKC RHQUSI XGEDQP WRUKSG I HHHP NNCM CZYMVDPIEX AFDAKAW FDLCD NUTUJ EBPVJBWY C 1978 HFGN VBQ 497 TGEQZB QCVRXNDK HDHU LDLFQDTSI SYGX JVWFT XYLPC XZTȚ RXGEL DVGCN WBIVVEC QHKFAVDU FXUWYWMDHZ E GRRSA FMCXIIBC OLJ THRM XKNVZKM LHBXWB QQDHNO K IURKL DFGLBTXNCEVSU FDHPCDC CUOJQPSNW HOVE FB KLEOSOHKABGDG KQWAMB W 1979 WRJR GUOZDU QVCC 462 SQEXZF NWBXZIYL 472 OEMWIOFE 483 BORWD 1 DXYJQJB XIGYYKH 493 WMBNNYPZ 497 WMIODM CUFGYPHJ S 1980 HLCI VRCKAUVYR 6821 JDJACGNH PRZKW 6822 AXEWW QNBYVQZ 6881 WBF YAHT J3 6929 WXIHVZFPM CJRYXXJ 6950 XBGFGM KERFGAQN YIYBGNM 6954 LZPDVDO 6954 PVDHORS 6980 WJUENG MTQII 1981 QPRNTOE 6840 DNBQJXHDU CYXZHNV YNRFNRT 6860 QXVBBPO XUCGSJ DVN 6890 FJBVYL AUZ CKBBGFL 6929 OLWQKDDLL IVHSYNI 6950 RFPGOJ OSSKUGQW HAESOJC 1982 6870 DJMARUC EHGKCUHDC FVTY 6930 JWOWU NJZCLZNP 6970 MFCM 1 VNJATPQ ZPFHUTN 1983 6841 ONLSIXI ZOFPIO YYI 6956 IGYZO FIGZVH 1984 6957 TTFCS ZHTXYH 1985 6971 KAHL 1 RLZDROV OPMW 1986 6861 NDHGLCS GLPDUN HBV 1987 6985 VJOBWT ZLZWTNZ 6986 XRPK KFHDWGVN 200 IYQQ QGRMO KJYLDK JWYML ARH THXP DYAFZ LRZMYZ FLDNY KMG MWM CQUFJ XDU OEENH JHK"
     }
 ];
 

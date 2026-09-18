@@ -1,0 +1,21 @@
+{
+  "name": "wiki",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run dev --prefix app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sh1b3r/wik1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Sh1b3r/wik1/issues"
+  },
+  "homepage": "https://github.com/Sh1b3r/wik1#readme"
+}

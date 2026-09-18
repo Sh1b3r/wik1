@@ -796,3 +796,67 @@ footer p {
     white-space: nowrap;
     z-index: 1001;
 }
+
+/* Speeder Game Buttons */
+.game-btn-start {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    border: 2px solid #38bdf8;
+    color: #ffffff;
+    padding: 16px 44px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 1.25rem;
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    letter-spacing: 0.06em;
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.7), 0 0 60px rgba(56, 189, 248, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    pointer-events: auto;
+    margin-bottom: 28px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.game-btn-start:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 45px rgba(56, 189, 248, 0.95), 0 0 80px rgba(37, 99, 235, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.35);
+    filter: brightness(1.1);
+}
+
+.game-btn-start:active {
+    transform: scale(0.97);
+}
+
+.game-btn-restart {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    border: 2px solid #f87171;
+    color: #ffffff;
+    padding: 16px 44px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 1.25rem;
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    letter-spacing: 0.06em;
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.7), 0 0 60px rgba(220, 38, 38, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    pointer-events: auto;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.game-btn-restart:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 45px rgba(239, 68, 68, 0.95), 0 0 80px rgba(220, 38, 38, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.35);
+    filter: brightness(1.1);
+}
+
+.game-btn-restart:active {
+    transform: scale(0.97);
+}
