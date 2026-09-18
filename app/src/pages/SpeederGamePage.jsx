@@ -109,7 +109,7 @@ function CoinItem({ coin, isVacuumPulled, studGeometry }) {
   })
 
   return (
-    <group ref={groupRef} position={[coin.x, coin.y, coin.z]} rotation={[0.3, 0, 0]} scale={0.0126}>
+    <group ref={groupRef} position={[coin.x, coin.y, coin.z]} rotation={[0.3, 0, 0]} scale={0.0195}>
       <mesh
         ref={materialRef}
         geometry={studGeometry}
@@ -793,41 +793,65 @@ export default function SpeederGamePage() {
   }
 
   // Generate a continuous, winding safe trail of Gold LEGO Plate, Round 1 x 1 studs.
-  const generateCoinsAlongSafePath = (startZ, count = 10) => {
+  // Coins actively weave in dynamic arcs around asteroids, guiding the player along safe channels.
+  const generateCoinsAlongSafePath = (startZ, count = 22) => {
     const newCoins = []
+    const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
+    const stepZ = 5.2 // Tight, rhythmic spacing for a clear visible trail
+
     for (let i = 0; i < count; i++) {
-      const z = startZ - i * 8
+      const z = startZ - i * stepZ
 
-      // Sample upcoming obstacles within influence distance
-      const nearbyObs = obstaclesRef.current.filter((o) => Math.abs(o.z - z) < 16)
+      // 1. Identify upcoming obstacles at and around this Z-depth
+      const nearbyObs = obstaclesRef.current.filter((o) => Math.abs(o.z - z) < 18)
 
-      // Bend toward a new direction a little at a time. The continuity score
-      // keeps adjacent studs close enough to read as one intentional route.
-      const previous = coinPathRef.current
-      const desiredAngle = previous.angle + (Math.random() - 0.5) * 0.8
-      const desiredRadius = THREE.MathUtils.clamp(previous.radius + (Math.random() - 0.5) * 0.9, 0.7, 0.75)
-      let bestX = previous.x
-      let bestY = previous.y
+      // 2. Previous heading and position
+      const prev = coinPathRef.current
+      // Natural serpentine arc drift (sinusoidal sweep across the screen)
+      const waveAngle = Math.sin(z * 0.045) * 1.25
+
+      // 3. Search a wide fan of candidate coordinates for maximum clearance from asteroids
+      let bestX = prev.x
+      let bestY = prev.y
       let bestScore = -Infinity
 
-      const candidates = 21
-      for (let c = 0; c < candidates; c++) {
-        const t = c / (candidates - 1) - 0.5
-        const ang = desiredAngle + t * 1.7
-        const radFactor = THREE.MathUtils.clamp(desiredRadius + Math.sin(t * Math.PI) * 0.7, 0.15, 0.82)
-        const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
-        const cx = Math.cos(ang) * b.x * radFactor
-        const cy = Math.sin(ang) * b.y * radFactor
+      const numCandidates = 36
+      for (let c = 0; c < numCandidates; c++) {
+        const frac = (c / (numCandidates - 1)) * 2 - 1 // -1.0 to 1.0
+        // Target angle blends previous angle, wave curve, and fan spread
+        const candidateAngle = prev.angle + frac * 1.9 + waveAngle * 0.25
+        const candidateRadFrac = THREE.MathUtils.clamp(
+          (prev.radius / Math.max(b.x, b.y)) + Math.cos(z * 0.035 + frac * 2) * 0.28,
+          0.18,
+          0.82
+        )
 
-        let minDist = 999
+        const cx = THREE.MathUtils.clamp(Math.cos(candidateAngle) * b.x * candidateRadFrac, -b.x * 0.88, b.x * 0.88)
+        const cy = THREE.MathUtils.clamp(Math.sin(candidateAngle) * b.y * candidateRadFrac, -b.y * 0.82, b.y * 0.82)
+
+        // Calculate distance to closest obstacle hitbox
+        let minObsDist = 999
         for (let j = 0; j < nearbyObs.length; j++) {
           const obs = nearbyObs[j]
           const d = Math.hypot(cx - obs.x, cy - obs.y)
-          if (d < minDist) minDist = d
+          if (d < minObsDist) minObsDist = d
         }
 
-        const stepDistance = Math.hypot(cx - previous.x, cy - previous.y)
-        const score = minDist - stepDistance * 0.38
+        // Distance from previous coin (continuity constraint: want smooth arc, no erratic teleportation)
+        const stepDist = Math.hypot(cx - prev.x, cy - prev.y)
+
+        // Scoring: heavily prioritize safe clearance (> 2.4 units), reward smooth arc progression, penalize harsh bends
+        let safetyBonus = 0
+        if (minObsDist < 1.8) {
+          safetyBonus = -500 // Dangerously close to asteroid
+        } else if (minObsDist > 3.0) {
+          safetyBonus = 40
+        }
+
+        const continuityPenalty = stepDist * 1.15
+        const arcBonus = Math.sin((z - startZ) * 0.08 + c * 0.3) * 6
+        const score = minObsDist * 45 + safetyBonus - continuityPenalty + arcBonus
+
         if (score > bestScore) {
           bestScore = score
           bestX = cx
@@ -835,17 +859,22 @@ export default function SpeederGamePage() {
         }
       }
 
+      // Smooth step towards best candidate
+      const lerpedX = THREE.MathUtils.lerp(prev.x, bestX, 0.45)
+      const lerpedY = THREE.MathUtils.lerp(prev.y, bestY, 0.45)
+
       coinPathRef.current = {
-        x: bestX,
-        y: bestY,
-        angle: Math.atan2(bestY, bestX),
-        radius: Math.hypot(bestX, bestY),
+        x: lerpedX,
+        y: lerpedY,
+        angle: Math.atan2(lerpedY, lerpedX),
+        radius: Math.hypot(lerpedX, lerpedY),
+        lastZ: z,
       }
 
       newCoins.push({
         id: uniqueId(),
-        x: bestX,
-        y: bestY,
+        x: lerpedX,
+        y: lerpedY,
         z,
       })
     }
@@ -915,14 +944,14 @@ export default function SpeederGamePage() {
     oneHitShieldRef.current = false // Reset one-hit shield on new game
 
     const initialList = []
-    for (let i = 0; i < 24; i++) {
-      initialList.push(generateObstacle(-16 - i * 7.5))
+    for (let i = 0; i < 30; i++) {
+      initialList.push(generateObstacle(-14 - i * 6.0))
     }
     obstaclesRef.current = initialList
     setDisplayObstacles([...initialList])
 
-    // Generate initial stream of gold studs immediately visible ahead
-    const initialCoins = generateCoinsAlongSafePath(-12, 16)
+    // Generate initial stream of gold studs immediately visible ahead in a long smooth arc
+    const initialCoins = generateCoinsAlongSafePath(-12, 28)
     coinsRef.current = initialCoins
     setDisplayCoins([...initialCoins])
 
@@ -1334,17 +1363,19 @@ export default function SpeederGamePage() {
       })
       coinsRef.current = coinsRef.current.filter((coin) => coin.z < 12)
       const furthestCoinZ = coinsRef.current.reduce((min, coin) => Math.min(min, coin.z), 0)
-      if (furthestCoinZ > -150) {
-        coinsRef.current.push(...generateCoinsAlongSafePath(-205, 14))
+      if (furthestCoinZ > -160) {
+        // Continue trail seamlessly from the exact end of the existing coin path without gaps
+        const nextStartZ = furthestCoinZ < -10 ? furthestCoinZ - 5.2 : -180
+        coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, 20))
       }
 
       // Filter passed obstacles
       obstaclesRef.current = obstaclesRef.current.filter((obs) => obs.z < 12)
 
       // Keep the field dense, lively, and frequent across the full width.
-      while (obstaclesRef.current.length < 24) {
+      while (obstaclesRef.current.length < 30) {
         const furthestZ = obstaclesRef.current.reduce((min, o) => Math.min(min, o.z), 0)
-        obstaclesRef.current.push(generateObstacle(Math.min(-175, furthestZ - (5.5 + Math.random() * 3.5))))
+        obstaclesRef.current.push(generateObstacle(Math.min(-180, furthestZ - (4.0 + Math.random() * 3.0))))
       }
 
       frameCount++
