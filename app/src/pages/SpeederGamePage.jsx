@@ -109,7 +109,7 @@ function CoinItem({ coin, isVacuumPulled, studGeometry }) {
   })
 
   return (
-    <group ref={groupRef} position={[coin.x, coin.y, coin.z]} rotation={[0.3, 0, 0]} scale={0.0195}>
+    <group ref={groupRef} position={[coin.x, coin.y, coin.z]} rotation={[0.3, 0, 0]} scale={0.0156}>
       <mesh
         ref={materialRef}
         geometry={studGeometry}
@@ -729,32 +729,38 @@ export default function SpeederGamePage() {
   const oneHitShieldRef = useRef(false) // Shield breaks on first hit
 
   // Generate a steady mix of asteroids and collectible Classic Space logos.
-  // Distributes asteroids uniformly across all 4 quadrants (top, bottom, left, right)
-  // Generate a steady mix of asteroids and collectible Classic Space logos.
-  // Distributes asteroids uniformly across all 4 quadrants (top, bottom, left, right)
-  // with particular attention to upper quadrants so the ceiling is never an easy bypass.
+  // Distributes asteroids across all 4 quadrants (including top) with chance of dangerous near-coin proximity
   const generateObstacle = (z) => {
     spawnCounterRef.current += 1
 
-    // Alternate sectors sequentially: 0 = right, 1 = top, 2 = left, 3 = bottom
-    // Weighted to frequently place asteroids in top sector (sector 1)
-    sectorIndexRef.current = (sectorIndexRef.current + 1) % 4
-    let sector = sectorIndexRef.current
-
-    // Sector base angles: 0 = right (0), 1 = top (PI/2), 2 = left (PI), 3 = bottom (3PI/2)
-    const baseAngle = sector * (Math.PI / 2)
-    // Add jitter within quadrant
-    const angle = baseAngle + (Math.random() * 0.7 + 0.15) * (Math.PI / 2)
-
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
-    // Full screen coverage from inner radius to near edges
-    const normDist = 0.20 + Math.sqrt(Math.random()) * 0.78
-    let x = Math.cos(angle) * (b.x * normDist)
-    let y = Math.sin(angle) * (b.y * normDist)
+    let x, y
 
-    // Ensure asteroids in the upper region actively threaten y > 1.0 to prevent ceiling camping
-    if (sector === 1 && y < 1.2) {
-      y = 1.2 + Math.random() * (b.y * 0.75)
+    // 28% chance: spawn directly menacing the coin road (in close proximity to the road, creating tight razor-thin gaps)
+    const isRoadMenace = Math.random() < 0.28
+    if (isRoadMenace) {
+      const roadX = Math.sin(z * 0.028) * (b.x * 0.68) + Math.sin(z * 0.014 + 1.1) * (b.x * 0.22)
+      const roadY = Math.cos(z * 0.024 + 0.4) * (b.y * 0.52) + Math.sin(z * 0.011) * (b.y * 0.18)
+      // Offset just 1.1 - 1.8 units away from coin road (deadly close proximity!)
+      const menaceAngle = Math.random() * Math.PI * 2
+      const menaceOffset = 1.1 + Math.random() * 0.85
+      x = THREE.MathUtils.clamp(roadX + Math.cos(menaceAngle) * menaceOffset, -b.x * 0.88, b.x * 0.88)
+      y = THREE.MathUtils.clamp(roadY + Math.sin(menaceAngle) * menaceOffset, -b.y * 0.82, b.y * 0.82)
+    } else {
+      // Alternate sectors sequentially: 0 = right, 1 = top, 2 = left, 3 = bottom
+      sectorIndexRef.current = (sectorIndexRef.current + 1) % 4
+      const sector = sectorIndexRef.current
+
+      const baseAngle = sector * (Math.PI / 2)
+      const angle = baseAngle + (Math.random() * 0.7 + 0.15) * (Math.PI / 2)
+      const normDist = 0.18 + Math.sqrt(Math.random()) * 0.80
+      x = Math.cos(angle) * (b.x * normDist)
+      y = Math.sin(angle) * (b.y * normDist)
+
+      // Ensure asteroids in the upper region actively threaten y > 1.0
+      if (sector === 1 && y < 1.2) {
+        y = 1.2 + Math.random() * (b.y * 0.75)
+      }
     }
 
     // Rare collectible Classic Space logo: arrives only every ~12-18 obstacles
@@ -806,8 +812,8 @@ export default function SpeederGamePage() {
   }
 
   // Continuous Highway Path Generator for Gold LEGO Studs
-  // Creates one grand winding road (slalom curves sweeping left-right, up-down across the entire screen)
-  // and smartly nudges around obstacles so the highway never breaks and never climbs straight to the ceiling.
+  // Creates one grand winding road across the screen.
+  // Coins now allow intense, tight close-calls right next to asteroids (distance strictly checked, close proximity hazards).
   const generateCoinsAlongSafePath = (startZ, count = 24) => {
     const newCoins = []
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
@@ -817,32 +823,29 @@ export default function SpeederGamePage() {
       const z = startZ - i * stepZ
 
       // 1. Primary Highway Centerline (harmonious composite waveforms traversing the whole screen)
-      // Horizontal S-curves (wide banking turns)
       const roadX = Math.sin(z * 0.028) * (b.x * 0.68) + Math.sin(z * 0.014 + 1.1) * (b.x * 0.22)
-      // Vertical undulations (sweeping up and down, balanced around center, never stuck at the top)
       const roadY = Math.cos(z * 0.024 + 0.4) * (b.y * 0.52) + Math.sin(z * 0.011) * (b.y * 0.18)
 
       let posX = THREE.MathUtils.clamp(roadX, -b.x * 0.82, b.x * 0.82)
       let posY = THREE.MathUtils.clamp(roadY, -b.y * 0.76, b.y * 0.76)
 
-      // 2. Dynamic Obstacle Deflection: check if any asteroid blocks the road at this point
-      const nearbyObs = obstaclesRef.current.filter((o) => Math.abs(o.z - z) < 9.0)
+      // 2. Proximity check: allow asteroids to be in tight, dangerous proximity to coins (safeMargin = 1.35)
+      // If an asteroid is right on top of the coin, nudge it just enough so a skilled pilot can graze past
+      const nearbyObs = obstaclesRef.current.filter((o) => Math.abs(o.z - z) < 7.5 && !o.isLogo)
       for (let j = 0; j < nearbyObs.length; j++) {
         const obs = nearbyObs[j]
         const dx = posX - obs.x
         const dy = posY - obs.y
         const dist = Math.hypot(dx, dy)
-        const safeMargin = 2.45
+        const minGap = 1.38 // Razor-thin tight clearance: directly next to the asteroid!
 
-        if (dist < safeMargin && dist > 0.001) {
-          // Push coin out of the asteroid's radius along the radial direction away from asteroid
-          const pushDistance = safeMargin - dist
+        if (dist < minGap && dist > 0.001) {
+          const pushDistance = minGap - dist
           const nx = dx / dist
           const ny = dy / dist
-          posX += nx * pushDistance * 1.15
-          posY += ny * pushDistance * 1.15
+          posX += nx * pushDistance * 1.05
+          posY += ny * pushDistance * 1.05
 
-          // Keep clamped within playable screen
           posX = THREE.MathUtils.clamp(posX, -b.x * 0.85, b.x * 0.85)
           posY = THREE.MathUtils.clamp(posY, -b.y * 0.80, b.y * 0.80)
         }
