@@ -777,12 +777,12 @@ export default function SpeederGamePage() {
     const minSafeCorridor = 5.2
 
     // Rare collectible Classic Space logo: arrives every ~10-15 obstacles
-    // Logos spawn right alongside the safe coin road (offset 0.8 - 1.5 units) so they are easy and natural to grab!
+    // Logos spawn ON the safe coin road (offset 0.3 - 0.85 units) so they are perfectly natural to grab!
     const isLogo = spawnCounterRef.current >= 10 && Math.random() < 0.35
     if (isLogo) {
       spawnCounterRef.current = 0
       const sideAngle = Math.random() * Math.PI * 2
-      const logoRoadOffset = 0.8 + Math.random() * 0.7 // Snuggled close to the coin path!
+      const logoRoadOffset = 0.3 + Math.random() * 0.55 // Sitting right on the coin path!
       const logoX = THREE.MathUtils.clamp(roadPt.x + Math.cos(sideAngle) * logoRoadOffset, -b.x * 0.85, b.x * 0.85)
       const logoY = THREE.MathUtils.clamp(roadPt.y + Math.sin(sideAngle) * logoRoadOffset, -b.y * 0.80, b.y * 0.80)
 
@@ -1396,7 +1396,8 @@ export default function SpeederGamePage() {
         const furthestZ = obstaclesRef.current.reduce((min, o) => Math.min(min, o.z), 0)
         const spawnZ = Math.min(-180, furthestZ - (3.6 + Math.random() * 2.8))
         // Pass distanceRef.current so the obstacle is strictly deflected away from the exact road position
-        obstaclesRef.current.push(generateObstacle(spawnZ, highwayWorldDistRef.current))
+        // IMPORTANT: use distanceRef (player's actual progress), NOT highwayWorldDistRef (coin counter ahead by ~250)
+        obstaclesRef.current.push(generateObstacle(spawnZ, distanceRef.current))
       }
 
       frameCount++
