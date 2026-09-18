@@ -13,10 +13,33 @@ import { assetUrl } from '../utils/asset.js'
 let idCounter = 0
 const uniqueId = () => `${Date.now()}-${++idCounter}-${Math.random().toString(36).slice(2, 9)}`
 
-// Invisible elliptical boundary radii for widescreen/mobile aspect ratios
-const BOUND_RADIUS_X = 7.6
-const BOUND_RADIUS_Y = 4.6
-const BOUND_RADIUS = 6.8
+// Calculate dynamic elliptical boundary radii based on screen aspect ratio
+// Widescreen PCs get wide freedom (up to 10.5+), mobile gets responsive comfortable bounds
+export const getScreenBounds = () => {
+  if (typeof window === 'undefined') return { x: 8.5, y: 4.8 }
+  const aspect = window.innerWidth / (window.innerHeight || 1)
+  const isMobile = window.innerWidth <= 900 || ('ontouchstart' in window)
+
+  let boundX, boundY
+  if (aspect >= 1.7) {
+    // Ultrawide and standard 16:9 / 16:10 desktop
+    boundX = isMobile ? 8.2 : 9.8
+    boundY = 4.8
+  } else if (aspect >= 1.3) {
+    // 4:3 or landscape tablet
+    boundX = isMobile ? 7.6 : 8.8
+    boundY = 5.2
+  } else {
+    // Square or portrait
+    boundX = 6.2
+    boundY = 6.8
+  }
+  return { x: boundX, y: boundY }
+}
+
+const initialBounds = getScreenBounds()
+let CURRENT_BOUND_X = initialBounds.x
+let CURRENT_BOUND_Y = initialBounds.y
 
 // Cohesive warm stone palette for LEGO Asteroids (no Z-fighting)
 const legoStoneBaseMat = new THREE.MeshStandardMaterial({
@@ -678,6 +701,20 @@ export default function SpeederGamePage() {
     }
   }, [])
 
+  // Dynamic boundaries based on actual device / window aspect ratio
+  const boundsRef = useRef(getScreenBounds())
+
+  useEffect(() => {
+    const handleResize = () => {
+      const b = getScreenBounds()
+      boundsRef.current = b
+      CURRENT_BOUND_X = b.x
+      CURRENT_BOUND_Y = b.y
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   // Buff Timers Refs
   const activeBuffRef = useRef(null)
   const collectedBuffRef = useRef(null)
@@ -696,9 +733,10 @@ export default function SpeederGamePage() {
     const baseAngle = currentSector * (Math.PI / 2)
     const angle = baseAngle + (Math.random() * 0.7 + 0.1) * (Math.PI / 2)
 
-    const normDist = 0.12 + Math.sqrt(Math.random()) * 0.82
-    const x = Math.cos(angle) * (BOUND_RADIUS_X * normDist)
-    const y = Math.sin(angle) * (BOUND_RADIUS_Y * normDist)
+    const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
+    const normDist = 0.10 + Math.sqrt(Math.random()) * 0.86
+    const x = Math.cos(angle) * (b.x * normDist)
+    const y = Math.sin(angle) * (b.y * normDist)
 
     // A logo arrives more frequently - every ~5-8 obstacles
     const isLogo = spawnCounterRef.current >= 5 && Math.random() < 0.55
@@ -770,9 +808,9 @@ export default function SpeederGamePage() {
       for (let c = 0; c < candidates; c++) {
         const t = c / (candidates - 1) - 0.5
         const ang = desiredAngle + t * 1.7
-        const radFactor = THREE.MathUtils.clamp(desiredRadius + Math.sin(t * Math.PI) * 0.7, 0.15, 0.82)
-        const cx = Math.cos(ang) * BOUND_RADIUS_X * radFactor
-        const cy = Math.sin(ang) * BOUND_RADIUS_Y * radFactor
+        const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
+        const cx = Math.cos(ang) * b.x * radFactor
+        const cy = Math.sin(ang) * b.y * radFactor
 
         let minDist = 999
         for (let j = 0; j < nearbyObs.length; j++) {
@@ -870,8 +908,8 @@ export default function SpeederGamePage() {
     oneHitShieldRef.current = false // Reset one-hit shield on new game
 
     const initialList = []
-    for (let i = 0; i < 11; i++) {
-      initialList.push(generateObstacle(-20 - i * 14))
+    for (let i = 0; i < 18; i++) {
+      initialList.push(generateObstacle(-18 - i * 9.5))
     }
     obstaclesRef.current = initialList
     setDisplayObstacles([...initialList])
@@ -1060,11 +1098,13 @@ export default function SpeederGamePage() {
         localStorage.setItem('saturn_speeder_freeflight_highscore', scoreRef.current.toString())
       }
 
-      // 2. High-Agility WASD & Touch Flight Physics
+      // 2. High-Agility, Ultra-Responsive WASD & Touch Flight Physics
       const p = playerRef.current
       const keys = keysRef.current
-      const ACCEL = 140 // Fast, direct steering for reliable safe-path following.
-      const FRICTION = 0.86
+      const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth <= 900 || ('ontouchstart' in window))
+      // Extra swift and snappy steering on PC, comfortable boost on touch
+      const ACCEL = isMobileDevice ? 180 : 230
+      const FRICTION = 0.90
 
       if (keys.KeyA || keys.ArrowLeft) p.vx -= ACCEL * dt
       if (keys.KeyD || keys.ArrowRight) p.vx += ACCEL * dt
@@ -1073,28 +1113,29 @@ export default function SpeederGamePage() {
 
       // Virtual touch joystick input
       if (touchInputRef.current.active) {
-        p.vx += touchInputRef.current.x * ACCEL * 1.15 * dt
-        p.vy += touchInputRef.current.y * ACCEL * 1.15 * dt
+        p.vx += touchInputRef.current.x * ACCEL * 1.25 * dt
+        p.vy += touchInputRef.current.y * ACCEL * 1.25 * dt
       }
 
       p.vx *= FRICTION
       p.vy *= FRICTION
 
-      // Max velocities for quick, sharp maneuvers
-      p.vx = Math.max(-30, Math.min(30, p.vx))
-      p.vy = Math.max(-26, Math.min(26, p.vy))
+      // Max velocities for quick, sharp maneuvers across the wider screen
+      p.vx = Math.max(-42, Math.min(42, p.vx))
+      p.vy = Math.max(-32, Math.min(32, p.vy))
 
       p.x += p.vx * dt
       p.y += p.vy * dt
 
-      // Widescreen boundary clamp
-      const normX = p.x / BOUND_RADIUS_X
-      const normY = p.y / BOUND_RADIUS_Y
+      // Dynamic screen-adaptive boundary clamp
+      const activeBounds = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
+      const normX = p.x / activeBounds.x
+      const normY = p.y / activeBounds.y
       const currentDist = Math.hypot(normX, normY)
       if (currentDist > 1.0) {
         const angle = Math.atan2(normY, normX)
-        p.x = Math.cos(angle) * BOUND_RADIUS_X
-        p.y = Math.sin(angle) * BOUND_RADIUS_Y
+        p.x = Math.cos(angle) * activeBounds.x
+        p.y = Math.sin(angle) * activeBounds.y
 
         // Bounce/friction slide along boundary
         const nx = Math.cos(angle)
@@ -1121,24 +1162,18 @@ export default function SpeederGamePage() {
           m.x += (target.x - m.x) * homeRate
           m.y += (target.y - m.y) * homeRate
 
-          const dx = target.x - m.x
-          const dy = target.y - m.y
-          const dz = target.z - m.z
-          const distSq = dx * dx + dy * dy + dz * dz
-
-          // Guaranteed hit: when close enough OR when missile overtakes target in Z
-          if (distSq < 3.2 || m.z <= target.z + 0.5) {
-            target.z = 999 // Destroy asteroid!
-            scoreRef.current += 50
+          // Destruction condition
+          if (m.z <= target.z + 0.5) {
+            target.z = 999
             missilesRef.current.splice(mIdx, 1)
-            continue
+            scoreRef.current += 150
+            distanceRef.current += 40
           }
         } else {
-          m.z -= (currentSpeed + 60) * dt
-        }
-
-        if (m.z < -180) {
-          missilesRef.current.splice(mIdx, 1)
+          m.z -= (currentSpeed + 75) * dt
+          if (m.z < -250) {
+            missilesRef.current.splice(mIdx, 1)
+          }
         }
       }
 
@@ -1158,16 +1193,16 @@ export default function SpeederGamePage() {
         obs.x += obs.driftX * dt
         obs.y += obs.driftY * dt
 
-        const obsNormX = obs.x / BOUND_RADIUS_X
-        const obsNormY = obs.y / BOUND_RADIUS_Y
+        const obsNormX = obs.x / activeBounds.x
+        const obsNormY = obs.y / activeBounds.y
         const obsDist = Math.hypot(obsNormX, obsNormY)
         if (obsDist > 1.0) {
           obs.driftX *= -1
           obs.driftY *= -1
           // Clamp position so asteroid can't escape the play area
           const angle = Math.atan2(obsNormY, obsNormX)
-          obs.x = Math.cos(angle) * BOUND_RADIUS_X
-          obs.y = Math.sin(angle) * BOUND_RADIUS_Y
+          obs.x = Math.cos(angle) * activeBounds.x
+          obs.y = Math.sin(angle) * activeBounds.y
         }
 
         // Collision check
@@ -1296,10 +1331,10 @@ export default function SpeederGamePage() {
       // Filter passed obstacles
       obstaclesRef.current = obstaclesRef.current.filter((obs) => obs.z < 12)
 
-      // Keep the field dense.
-      while (obstaclesRef.current.length < 12) {
+      // Keep the field dense and active across the full width.
+      while (obstaclesRef.current.length < 18) {
         const furthestZ = obstaclesRef.current.reduce((min, o) => Math.min(min, o.z), 0)
-        obstaclesRef.current.push(generateObstacle(Math.min(-175, furthestZ - (12 + Math.random() * 6))))
+        obstaclesRef.current.push(generateObstacle(Math.min(-175, furthestZ - (7.5 + Math.random() * 4.5))))
       }
 
       frameCount++
