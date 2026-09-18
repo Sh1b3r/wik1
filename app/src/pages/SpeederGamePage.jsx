@@ -13,8 +13,10 @@ import { assetUrl } from '../utils/asset.js'
 let idCounter = 0
 const uniqueId = () => `${Date.now()}-${++idCounter}-${Math.random().toString(36).slice(2, 9)}`
 
-// Invisible circular boundary radius
-const BOUND_RADIUS = 4.39
+// Invisible elliptical boundary radii for widescreen/mobile aspect ratios
+const BOUND_RADIUS_X = 7.6
+const BOUND_RADIUS_Y = 4.6
+const BOUND_RADIUS = 6.8
 
 // Cohesive warm stone palette for LEGO Asteroids (no Z-fighting)
 const legoStoneBaseMat = new THREE.MeshStandardMaterial({
@@ -522,7 +524,7 @@ function SpaceWorld(props) {
 
   return (
     <Canvas
-      camera={{ position: [0, 1.8, 8.5], fov: 56, near: 0.1, far: 500 }}
+      camera={{ position: [0, 2.0, 9.2], fov: 62, near: 0.1, far: 500 }}
       dpr={dpr}
       gl={{
         antialias: true,
@@ -694,9 +696,9 @@ export default function SpeederGamePage() {
     const baseAngle = currentSector * (Math.PI / 2)
     const angle = baseAngle + (Math.random() * 0.7 + 0.1) * (Math.PI / 2)
 
-    const dist = 0.6 + Math.sqrt(Math.random()) * (BOUND_RADIUS * 0.88 - 0.6)
-    const x = Math.cos(angle) * dist
-    const y = Math.sin(angle) * dist
+    const normDist = 0.12 + Math.sqrt(Math.random()) * 0.82
+    const x = Math.cos(angle) * (BOUND_RADIUS_X * normDist)
+    const y = Math.sin(angle) * (BOUND_RADIUS_Y * normDist)
 
     // A logo arrives more frequently - every ~5-8 obstacles
     const isLogo = spawnCounterRef.current >= 5 && Math.random() < 0.55
@@ -759,7 +761,7 @@ export default function SpeederGamePage() {
       // keeps adjacent studs close enough to read as one intentional route.
       const previous = coinPathRef.current
       const desiredAngle = previous.angle + (Math.random() - 0.5) * 0.8
-      const desiredRadius = THREE.MathUtils.clamp(previous.radius + (Math.random() - 0.5) * 0.9, 0.7, BOUND_RADIUS * 0.72)
+      const desiredRadius = THREE.MathUtils.clamp(previous.radius + (Math.random() - 0.5) * 0.9, 0.7, 0.75)
       let bestX = previous.x
       let bestY = previous.y
       let bestScore = -Infinity
@@ -768,9 +770,9 @@ export default function SpeederGamePage() {
       for (let c = 0; c < candidates; c++) {
         const t = c / (candidates - 1) - 0.5
         const ang = desiredAngle + t * 1.7
-        const rad = THREE.MathUtils.clamp(desiredRadius + Math.sin(t * Math.PI) * 0.7, 0.65, BOUND_RADIUS * 0.78)
-        const cx = Math.cos(ang) * rad
-        const cy = Math.sin(ang) * rad
+        const radFactor = THREE.MathUtils.clamp(desiredRadius + Math.sin(t * Math.PI) * 0.7, 0.15, 0.82)
+        const cx = Math.cos(ang) * BOUND_RADIUS_X * radFactor
+        const cy = Math.sin(ang) * BOUND_RADIUS_Y * radFactor
 
         let minDist = 999
         for (let j = 0; j < nearbyObs.length; j++) {
@@ -868,16 +870,14 @@ export default function SpeederGamePage() {
     oneHitShieldRef.current = false // Reset one-hit shield on new game
 
     const initialList = []
-    for (let i = 0; i < 9; i++) {
-      initialList.push(generateObstacle(-70 - i * 14))
+    for (let i = 0; i < 11; i++) {
+      initialList.push(generateObstacle(-20 - i * 14))
     }
     obstaclesRef.current = initialList
     setDisplayObstacles([...initialList])
 
-    // Generate initial stream of gold studs along the safe path
-    // Begin the collectible trail beyond the visible playfield. This prevents
-    // a stack of coins from appearing over the ship when a round starts.
-    const initialCoins = generateCoinsAlongSafePath(-105, 14)
+    // Generate initial stream of gold studs immediately visible ahead
+    const initialCoins = generateCoinsAlongSafePath(-12, 16)
     coinsRef.current = initialCoins
     setDisplayCoins([...initialCoins])
 
@@ -1087,17 +1087,22 @@ export default function SpeederGamePage() {
       p.x += p.vx * dt
       p.y += p.vy * dt
 
-      // Circular boundary clamp
-      const currentDist = Math.sqrt(p.x * p.x + p.y * p.y)
-      if (currentDist > BOUND_RADIUS) {
-        const angle = Math.atan2(p.y, p.x)
-        p.x = Math.cos(angle) * BOUND_RADIUS
-        p.y = Math.sin(angle) * BOUND_RADIUS
+      // Widescreen boundary clamp
+      const normX = p.x / BOUND_RADIUS_X
+      const normY = p.y / BOUND_RADIUS_Y
+      const currentDist = Math.hypot(normX, normY)
+      if (currentDist > 1.0) {
+        const angle = Math.atan2(normY, normX)
+        p.x = Math.cos(angle) * BOUND_RADIUS_X
+        p.y = Math.sin(angle) * BOUND_RADIUS_Y
 
-        const dot = p.vx * Math.cos(angle) + p.vy * Math.sin(angle)
+        // Bounce/friction slide along boundary
+        const nx = Math.cos(angle)
+        const ny = Math.sin(angle)
+        const dot = p.vx * nx + p.vy * ny
         if (dot > 0) {
-          p.vx -= dot * Math.cos(angle)
-          p.vy -= dot * Math.sin(angle)
+          p.vx -= dot * nx
+          p.vy -= dot * ny
         }
       }
 
@@ -1153,14 +1158,16 @@ export default function SpeederGamePage() {
         obs.x += obs.driftX * dt
         obs.y += obs.driftY * dt
 
-        const obsDist = Math.sqrt(obs.x * obs.x + obs.y * obs.y)
-        if (obsDist > BOUND_RADIUS) {
+        const obsNormX = obs.x / BOUND_RADIUS_X
+        const obsNormY = obs.y / BOUND_RADIUS_Y
+        const obsDist = Math.hypot(obsNormX, obsNormY)
+        if (obsDist > 1.0) {
           obs.driftX *= -1
           obs.driftY *= -1
           // Clamp position so asteroid can't escape the play area
-          const angle = Math.atan2(obs.y, obs.x)
-          obs.x = Math.cos(angle) * BOUND_RADIUS
-          obs.y = Math.sin(angle) * BOUND_RADIUS
+          const angle = Math.atan2(obsNormY, obsNormX)
+          obs.x = Math.cos(angle) * BOUND_RADIUS_X
+          obs.y = Math.sin(angle) * BOUND_RADIUS_Y
         }
 
         // Collision check
@@ -1766,8 +1773,8 @@ export default function SpeederGamePage() {
           <button
             type="button"
             className="game-btn-start"
-            onClick={async () => {
-              await requestGameFullscreen()
+            onClick={() => {
+              requestGameFullscreen().catch(() => {})
               startGame()
             }}
             title="Press to start"

@@ -130,10 +130,10 @@ export default function SpeederViewer({ height = '420px', className = '' }) {
           <pointLight position={[2, -1, 3]} intensity={0.5} color="#ffaa00" />
 
           <Suspense fallback={null}>
-            {/* Astronaut: positioned on the left */}
-            <group position={[-1.7, 0.1, 1.0]}>
+            {/* Astronaut: positioned clearly to the left so it does not intersect with the speeder */}
+            <group position={[-2.4, 0.15, 1.35]}>
               <AstronautModel
-                scale={1.25}
+                scale={1.45}
                 position={[0, 0, 0]}
                 rotation={[0, 0.2, 0]}
               />
