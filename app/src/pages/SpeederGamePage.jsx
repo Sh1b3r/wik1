@@ -929,8 +929,8 @@ export default function SpeederGamePage() {
     obstaclesRef.current = initialList
     setDisplayObstacles([...initialList])
 
-    // Generate initial stream of gold studs immediately visible ahead in a long smooth arc
-    const initialCoins = generateCoinsAlongSafePath(-12, 28, 0)
+    // Generate initial stream of gold studs immediately visible ahead in a long smooth unbroken arc
+    const initialCoins = generateCoinsAlongSafePath(-2, 52, 0)
     coinsRef.current = initialCoins
     setDisplayCoins([...initialCoins])
 
@@ -1364,11 +1364,13 @@ export default function SpeederGamePage() {
       })
       // Filter out passed coins and collected coins (z > 12 or z > 900)
       coinsRef.current = coinsRef.current.filter((coin) => coin.z < 12 && coin.z > -900)
+      // Find furthest coin currently ahead
       const furthestCoinZ = coinsRef.current.reduce((min, coin) => Math.min(min, coin.z), 0)
-      if (furthestCoinZ > -175) {
+      // Always maintain an unbroken highway spanning at least -250 units ahead
+      if (furthestCoinZ > -250) {
         // Continue trail seamlessly without any gaps, stepping exactly 4.8 units from the furthest coin
-        const nextStartZ = furthestCoinZ < -5 ? furthestCoinZ - 4.8 : -190
-        const batchCount = 26
+        const nextStartZ = furthestCoinZ < -5 ? furthestCoinZ - 4.8 : -20
+        const batchCount = 30
         coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, batchCount, distanceRef.current))
       }
 
