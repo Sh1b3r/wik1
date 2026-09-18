@@ -116,32 +116,42 @@ export default function SpeederViewer({ height = '420px', className = '' }) {
         <span>🚀</span>
       </Link>
 
-      {/* Single Unified 3D Canvas Scene */}
-      <Canvas
-        camera={{ position: [0, 0.7, 5.2], fov: 36, near: 0.001, far: 1000 }}
-        dpr={[1, 1.3]}
-        shadows={false}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      >
-        <ambientLight intensity={1.1} />
-        <directionalLight position={[6, 12, 8]} intensity={1.8} />
-        <pointLight position={[-6, 5, 2]} intensity={1.0} color="#38bdf8" />
-        <pointLight position={[2, -1, 3]} intensity={0.5} color="#ffaa00" />
+      {/* Desktop 3D Canvas Scene (hidden on mobile to prevent any lag) */}
+      <div className="speeder-viewer-canvas-wrap">
+        <Canvas
+          camera={{ position: [0, 0.7, 5.2], fov: 36, near: 0.001, far: 1000 }}
+          dpr={[1, 1.5]}
+          shadows={false}
+          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        >
+          <ambientLight intensity={1.1} />
+          <directionalLight position={[6, 12, 8]} intensity={1.8} />
+          <pointLight position={[-6, 5, 2]} intensity={1.0} color="#38bdf8" />
+          <pointLight position={[2, -1, 3]} intensity={0.5} color="#ffaa00" />
 
-        <Suspense fallback={null}>
-          {/* Astronaut: positioned on the left */}
-          <group position={[-1.7, 0.1, 1.0]}>
-            <AstronautModel
-              scale={1.25}
-              position={[0, 0, 0]}
-              rotation={[0, 0.2, 0]}
-            />
-          </group>
+          <Suspense fallback={null}>
+            {/* Astronaut: positioned on the left */}
+            <group position={[-1.7, 0.1, 1.0]}>
+              <AstronautModel
+                scale={1.25}
+                position={[0, 0, 0]}
+                rotation={[0, 0.2, 0]}
+              />
+            </group>
 
-          {/* Speeder: placed to the right of the astronaut in the same 3D space, smoothly rotating */}
-          <RotatingSpeeder />
-        </Suspense>
-      </Canvas>
+            {/* Speeder: placed to the right of the astronaut in the same 3D space, smoothly rotating */}
+            <RotatingSpeeder />
+          </Suspense>
+        </Canvas>
+      </div>
+
+      {/* Mobile-only lightweight graphic decoration */}
+      <div className="speeder-viewer-mobile-art">
+        <div style={{ fontSize: '4rem', filter: 'drop-shadow(0 0 20px #38bdf8)' }}>🚀</div>
+        <div style={{ color: '#94a3b8', fontSize: '0.9rem', textAlign: 'center', padding: '0 20px' }}>
+          3D-симулятор польоту у космосі LEGO Classic Space
+        </div>
+      </div>
     </div>
   )
 }

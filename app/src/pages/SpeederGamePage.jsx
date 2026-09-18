@@ -463,8 +463,8 @@ function SpaceWorld({ playerRef, obstacles, coins, missiles, speedRef, isInvulne
   return (
     <Canvas
       camera={{ position: [0, 1.8, 8.5], fov: 56, near: 0.1, far: 500 }}
-      dpr={[1, 1.2]}
-      gl={{ antialias: false, powerPreference: 'high-performance', stencil: false }}
+      dpr={[1, 2]}
+      gl={{ antialias: true, powerPreference: 'high-performance' }}
       style={{ width: '100%', height: '100%', pointerEvents: 'none' }}
     >
       <color attach="background" args={['#040816']} />
@@ -1460,34 +1460,22 @@ export default function SpeederGamePage() {
           {/* Collected Buff Box */}
           {collectedBuff && (
             <div
+              className="game-collected-buff-box"
               onClick={() => activateBuff(collectedBuff)}
               style={{
-                position: 'absolute',
-                top: 20,
-                right: 24,
-                zIndex: 30,
-                background: 'rgba(15, 23, 42, 0.92)',
                 border: `2px solid ${collectedBuff.color}`,
-                borderRadius: '20px',
-                padding: '12px 20px',
                 boxShadow: `0 0 16px ${collectedBuff.color}44`,
-                cursor: 'pointer',
-                backdropFilter: 'blur(10px)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '14px',
-                transition: 'transform 0.2s ease',
               }}
             >
-              <div style={{ fontSize: '2rem' }}>{collectedBuff.icon}</div>
+              <div className="buff-icon" style={{ fontSize: '2rem' }}>{collectedBuff.icon}</div>
               <div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase' }}>
-                  ГОТОВО ДО АКТИВАЦІЇ:
+                <div className="buff-prompt" style={{ fontSize: '0.75rem', color: '#94a3b8', textTransform: 'uppercase' }}>
+                  ГОТОВО:
                 </div>
-                <div style={{ fontSize: '1.1rem', fontWeight: 900, color: collectedBuff.color }}>
-                  Натисніть [{collectedBuff.activationKey === 'Auto' ? 'АВТО' : 'SPACE / TAP'}]
+                <div className="buff-key" style={{ fontSize: '1.05rem', fontWeight: 900, color: collectedBuff.color }}>
+                  [{collectedBuff.activationKey === 'Auto' ? 'АВТО' : 'SPACE / TAP'}]
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#e2e8f0' }}>{collectedBuff.name}</div>
+                <div className="buff-title" style={{ fontSize: '0.75rem', color: '#e2e8f0' }}>{collectedBuff.name}</div>
               </div>
             </div>
           )}
@@ -1495,30 +1483,16 @@ export default function SpeederGamePage() {
           {/* Active Buff Timer Bar */}
           {activeBuff && (
             <div
+              className="game-active-buff-bar"
               style={{
-                position: 'absolute',
-                top: 88,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 25,
-                background: 'rgba(15, 23, 42, 0.9)',
                 border: `2px solid ${activeBuff.color}`,
-                padding: '8px 24px',
-                borderRadius: '24px',
                 color: activeBuff.color,
-                fontSize: '0.95rem',
-                fontWeight: 800,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
                 boxShadow: `0 0 25px ${activeBuff.color}55`,
-                backdropFilter: 'blur(10px)',
-                pointerEvents: 'none',
               }}
             >
               <span>{activeBuff.icon}</span>
               <span>{activeBuff.name}</span>
-              <span style={{ color: '#fff', fontSize: '1.1rem' }}>
+              <span style={{ color: '#fff', fontSize: '1.05rem' }}>
                 {buffTimeRemaining.toFixed(1)}s
               </span>
             </div>

@@ -1009,6 +1009,35 @@ footer p {
     filter: brightness(1.2);
 }
 
+/* Speeder Viewer in Wikipedia article: hide 3D canvas on mobile to eliminate lag */
+.speeder-viewer-canvas-wrap {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+}
+
+.speeder-viewer-mobile-art {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .speeder-viewer-canvas-wrap {
+        display: none !important;
+    }
+    .speeder-viewer-mobile-art {
+        display: flex !important;
+    }
+}
+
 /* Compact HUD on Mobile Landscape & General Game Styling */
 .game-top-hud {
     padding: 10px 32px;
@@ -1024,23 +1053,110 @@ footer p {
     overflow-wrap: normal !important;
 }
 
+/* Collected Buff Card & Active Buff on Mobile */
+.game-collected-buff-box {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    z-index: 30;
+    background: rgba(15, 23, 42, 0.92);
+    border-radius: 20px;
+    padding: 12px 20px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: transform 0.2s ease;
+}
+
+.game-active-buff-bar {
+    position: absolute;
+    top: 88px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    background: rgba(15, 23, 42, 0.9);
+    padding: 8px 24px;
+    border-radius: 24px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
 @media (max-width: 900px) {
     .game-top-hud {
-        padding: 5px 14px !important;
-        gap: 12px !important;
-        top: 8px !important;
-        border-radius: 20px !important;
-        max-width: 90vw !important;
+        padding: 4px 14px !important;
+        gap: 10px !important;
+        top: 6px !important;
+        border-radius: 18px !important;
+        max-width: 92vw !important;
     }
     .game-top-hud .hud-val {
-        font-size: 1.05rem !important;
-        line-height: 1.1 !important;
+        font-size: 1.0rem !important;
+        line-height: 1.05 !important;
     }
     .game-top-hud .hud-lbl {
+        font-size: 0.52rem !important;
+        letter-spacing: 0.04em !important;
+    }
+
+    /* Proportionally shrink collected buff so it doesn't block the screen */
+    .game-collected-buff-box {
+        top: 6px !important;
+        right: 12px !important;
+        padding: 5px 12px !important;
+        border-radius: 14px !important;
+        gap: 8px !important;
+        max-width: 170px !important;
+    }
+    .game-collected-buff-box .buff-icon {
+        font-size: 1.25rem !important;
+    }
+    .game-collected-buff-box .buff-prompt {
         font-size: 0.55rem !important;
-        letter-spacing: 0.05em !important;
+    }
+    .game-collected-buff-box .buff-key {
+        font-size: 0.78rem !important;
+        line-height: 1.1 !important;
+    }
+    .game-collected-buff-box .buff-title {
+        font-size: 0.65rem !important;
+    }
+
+    .game-active-buff-bar {
+        top: 48px !important;
+        padding: 4px 14px !important;
+        font-size: 0.75rem !important;
+        border-radius: 16px !important;
+        gap: 6px !important;
+    }
+
+    /* Game Over screen compact layout for mobile landscape */
+    .game-over-video-wrap {
+        margin-top: 48px !important;
+        margin-bottom: 8px !important;
+        max-width: 320px !important;
+        border-radius: 14px !important;
+    }
+    .game-over-video-wrap video {
+        max-height: 140px !important;
+    }
+    .game-over-restart-wrap {
+        margin-top: 8px !important;
+    }
+    .game-over-restart-wrap button {
+        padding: 8px 24px !important;
+        font-size: 0.95rem !important;
     }
 }
+
+
 
 
 

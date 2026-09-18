@@ -136,11 +136,12 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
 
       {/* Center Video instead of GAME OVER text */}
       <div
+        className="game-over-video-wrap"
         style={{
           position: 'relative',
           zIndex: 10,
-          maxWidth: '480px',
-          width: 'min(480px, 86vw)',
+          maxWidth: '440px',
+          width: 'min(440px, 86vw)',
           borderRadius: '20px',
           overflow: 'hidden',
           boxShadow: '0 0 45px rgba(239, 68, 68, 0.45), 0 16px 45px rgba(0, 0, 0, 0.8)',
@@ -148,7 +149,8 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
           opacity: ready ? 1 : 0,
           transform: ready ? 'scale(1)' : 'scale(0.95)',
           transition: 'opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s',
-          marginTop: '1.2rem',
+          marginTop: '70px',
+          marginBottom: '16px',
           lineHeight: 0,
         }}
       >
@@ -161,7 +163,7 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
           style={{
             width: '100%',
             height: 'auto',
-            maxHeight: '270px',
+            maxHeight: '230px',
             display: 'block',
             objectFit: 'cover',
             objectPosition: 'center 42%',
@@ -171,11 +173,13 @@ function GameOverScreen({ onRestart, finalScore = 0, finalDistance = 0, finalStu
 
       {/* Restart button */}
       <div
+        className="game-over-restart-wrap"
         style={{
           opacity: ready ? 1 : 0,
           transform: 'translateY(0)',
           transition: 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s',
-          marginTop: '2rem',
+          marginTop: '8px',
+          marginBottom: '16px',
           pointerEvents: 'auto',
           cursor: 'pointer',
           zIndex: 10,
