@@ -2,8 +2,9 @@ import React, { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import { assetUrl } from '../utils/asset.js'
 
-const MODEL_URL = `${import.meta.env.BASE_URL}model.glb`
+const MODEL_URL = assetUrl('model.glb')
 
 export function SpeederModel({ floating = true, tilt = 0, ...props }) {
   const group = useRef()

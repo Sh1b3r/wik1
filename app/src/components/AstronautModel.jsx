@@ -3,9 +3,10 @@ import { useLoader } from '@react-three/fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { TextureLoader } from 'three'
 import * as THREE from 'three'
+import { assetUrl } from '../utils/asset.js'
 
-const OBJ_URL = `${import.meta.env.BASE_URL}33ea5f182f154eb58632d4463077fd18/3716c913eaabe33c871442eb53379c9e.obj`
-const TEXTURE_URL = `${import.meta.env.BASE_URL}33ea5f182f154eb58632d4463077fd18/texture_20250901.png`
+const OBJ_URL = assetUrl('33ea5f182f154eb58632d4463077fd18/3716c913eaabe33c871442eb53379c9e.obj')
+const TEXTURE_URL = assetUrl('33ea5f182f154eb58632d4463077fd18/texture_20250901.png')
 
 export function AstronautModel({
   scale = 1.35,

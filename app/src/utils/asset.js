@@ -1,5 +1,7 @@
-// Шляхи в даних зберігаються відносно public/ ("images/..."),
-// а BASE_URL у продакшені дорівнює "/wik1/", тож конкатенуємо тут.
 export function assetUrl(path) {
-    return import.meta.env.BASE_URL + path
+    if (!path) return ''
+    const base = import.meta.env.BASE_URL || '/'
+    const cleanBase = base.endsWith('/') ? base : `${base}/`
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path
+    return cleanBase + cleanPath
 }

@@ -1,8 +1,9 @@
 import React, { useRef, useMemo } from 'react'
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
+import { assetUrl } from '../utils/asset.js'
 
-const MODEL_URL = `${import.meta.env.BASE_URL}custom-logo.glb`
+const MODEL_URL = assetUrl('custom-logo.glb')
 
 export function ClassicSpaceLogo3D({ scale = 1, position = [0, 0, 0], rotation = [0, 0, 0], ...props }) {
   const group = useRef()
