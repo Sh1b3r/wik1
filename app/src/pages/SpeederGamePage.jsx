@@ -728,39 +728,29 @@ export default function SpeederGamePage() {
   const missileFireCooldownRef = useRef(0)
   const oneHitShieldRef = useRef(false) // Shield breaks on first hit
 
+  // Track cumulative world distance for smooth, endless, non-repeating continuous highway generation
+  const coinRoadDistRef = useRef(0)
+
   // Generate a steady mix of asteroids and collectible Classic Space logos.
-  // Distributes asteroids across all 4 quadrants (including top) with chance of dangerous near-coin proximity
+  // Distributes asteroids across all 4 quadrants (including top) with guaranteed safe clearance around the coin trail.
   const generateObstacle = (z) => {
     spawnCounterRef.current += 1
 
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
-    let x, y
 
-    // 28% chance: spawn directly menacing the coin road (in close proximity to the road, creating tight razor-thin gaps)
-    const isRoadMenace = Math.random() < 0.28
-    if (isRoadMenace) {
-      const roadX = Math.sin(z * 0.028) * (b.x * 0.68) + Math.sin(z * 0.014 + 1.1) * (b.x * 0.22)
-      const roadY = Math.cos(z * 0.024 + 0.4) * (b.y * 0.52) + Math.sin(z * 0.011) * (b.y * 0.18)
-      // Offset just 1.1 - 1.8 units away from coin road (deadly close proximity!)
-      const menaceAngle = Math.random() * Math.PI * 2
-      const menaceOffset = 1.1 + Math.random() * 0.85
-      x = THREE.MathUtils.clamp(roadX + Math.cos(menaceAngle) * menaceOffset, -b.x * 0.88, b.x * 0.88)
-      y = THREE.MathUtils.clamp(roadY + Math.sin(menaceAngle) * menaceOffset, -b.y * 0.82, b.y * 0.82)
-    } else {
-      // Alternate sectors sequentially: 0 = right, 1 = top, 2 = left, 3 = bottom
-      sectorIndexRef.current = (sectorIndexRef.current + 1) % 4
-      const sector = sectorIndexRef.current
+    // Alternate sectors sequentially: 0 = right, 1 = top, 2 = left, 3 = bottom
+    sectorIndexRef.current = (sectorIndexRef.current + 1) % 4
+    const sector = sectorIndexRef.current
 
-      const baseAngle = sector * (Math.PI / 2)
-      const angle = baseAngle + (Math.random() * 0.7 + 0.15) * (Math.PI / 2)
-      const normDist = 0.18 + Math.sqrt(Math.random()) * 0.80
-      x = Math.cos(angle) * (b.x * normDist)
-      y = Math.sin(angle) * (b.y * normDist)
+    const baseAngle = sector * (Math.PI / 2)
+    const angle = baseAngle + (Math.random() * 0.7 + 0.15) * (Math.PI / 2)
+    const normDist = 0.22 + Math.sqrt(Math.random()) * 0.76
+    let x = Math.cos(angle) * (b.x * normDist)
+    let y = Math.sin(angle) * (b.y * normDist)
 
-      // Ensure asteroids in the upper region actively threaten y > 1.0
-      if (sector === 1 && y < 1.2) {
-        y = 1.2 + Math.random() * (b.y * 0.75)
-      }
+    // Ensure asteroids in the upper region actively threaten y > 1.2
+    if (sector === 1 && y < 1.3) {
+      y = 1.3 + Math.random() * (b.y * 0.72)
     }
 
     // Rare collectible Classic Space logo: arrives only every ~12-18 obstacles
@@ -812,39 +802,41 @@ export default function SpeederGamePage() {
   }
 
   // Continuous Highway Path Generator for Gold LEGO Studs
-  // Creates one grand winding road across the screen.
-  // Coins now allow intense, tight close-calls right next to asteroids (distance strictly checked, close proximity hazards).
-  const generateCoinsAlongSafePath = (startZ, count = 24) => {
+  // Creates one grand, endless, unbroken winding road.
+  // Parametrized by cumulative world distance so it NEVER breaks, resets, or repeats abruptly.
+  // Maintains a generous, safe corridor (> 2.8 units) from asteroids so the player can collect coins safely without crashing.
+  const generateCoinsAlongSafePath = (startZ, count = 24, startWorldDist = 0) => {
     const newCoins = []
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
     const stepZ = 4.8 // Consistent rhythmic step along the highway road
 
     for (let i = 0; i < count; i++) {
       const z = startZ - i * stepZ
+      const s = startWorldDist + i * stepZ
 
-      // 1. Primary Highway Centerline (harmonious composite waveforms traversing the whole screen)
-      const roadX = Math.sin(z * 0.028) * (b.x * 0.68) + Math.sin(z * 0.014 + 1.1) * (b.x * 0.22)
-      const roadY = Math.cos(z * 0.024 + 0.4) * (b.y * 0.52) + Math.sin(z * 0.011) * (b.y * 0.18)
+      // 1. Endless non-repeating multi-frequency highway curve based on cumulative distance s
+      const roadX = Math.sin(s * 0.024) * (b.x * 0.65) + Math.sin(s * 0.011 + 1.2) * (b.x * 0.22)
+      const roadY = Math.cos(s * 0.020 + 0.4) * (b.y * 0.52) + Math.sin(s * 0.009) * (b.y * 0.18)
 
       let posX = THREE.MathUtils.clamp(roadX, -b.x * 0.82, b.x * 0.82)
       let posY = THREE.MathUtils.clamp(roadY, -b.y * 0.76, b.y * 0.76)
 
-      // 2. Proximity check: allow asteroids to be in tight, dangerous proximity to coins (safeMargin = 1.35)
-      // If an asteroid is right on top of the coin, nudge it just enough so a skilled pilot can graze past
-      const nearbyObs = obstaclesRef.current.filter((o) => Math.abs(o.z - z) < 7.5 && !o.isLogo)
+      // 2. Strict, generous clearance: push coin safely away from any asteroid within 2.85 units
+      // so the player will NEVER crash into an asteroid just by following the coin road!
+      const nearbyObs = obstaclesRef.current.filter((o) => Math.abs(o.z - z) < 8.5 && !o.isLogo)
       for (let j = 0; j < nearbyObs.length; j++) {
         const obs = nearbyObs[j]
         const dx = posX - obs.x
         const dy = posY - obs.y
         const dist = Math.hypot(dx, dy)
-        const minGap = 1.38 // Razor-thin tight clearance: directly next to the asteroid!
+        const safeClearance = 2.85 // Generous, safe buffer — plenty of room for the ship
 
-        if (dist < minGap && dist > 0.001) {
-          const pushDistance = minGap - dist
-          const nx = dx / dist
-          const ny = dy / dist
-          posX += nx * pushDistance * 1.05
-          posY += ny * pushDistance * 1.05
+        if (dist < safeClearance) {
+          const pushDistance = safeClearance - dist
+          const nx = dist > 0.001 ? dx / dist : 1
+          const ny = dist > 0.001 ? dy / dist : 0
+          posX += nx * pushDistance * 1.12
+          posY += ny * pushDistance * 1.12
 
           posX = THREE.MathUtils.clamp(posX, -b.x * 0.85, b.x * 0.85)
           posY = THREE.MathUtils.clamp(posY, -b.y * 0.80, b.y * 0.80)
@@ -853,6 +845,7 @@ export default function SpeederGamePage() {
 
       newCoins.push({
         id: uniqueId(),
+        worldDist: s,
         x: posX,
         y: posY,
         z,
@@ -931,7 +924,8 @@ export default function SpeederGamePage() {
     setDisplayObstacles([...initialList])
 
     // Generate initial stream of gold studs immediately visible ahead in a long smooth arc
-    const initialCoins = generateCoinsAlongSafePath(-12, 28)
+    coinRoadDistRef.current = 28 * 4.8
+    const initialCoins = generateCoinsAlongSafePath(-12, 28, 0)
     coinsRef.current = initialCoins
     setDisplayCoins([...initialCoins])
 
@@ -1344,10 +1338,13 @@ export default function SpeederGamePage() {
       // Filter out passed coins and collected coins (z > 12 or z > 900)
       coinsRef.current = coinsRef.current.filter((coin) => coin.z < 12 && coin.z > -900)
       const furthestCoinZ = coinsRef.current.reduce((min, coin) => Math.min(min, coin.z), 0)
-      if (furthestCoinZ > -165) {
+      if (furthestCoinZ > -175) {
         // Continue trail seamlessly without any gaps, stepping exactly 4.8 units from the furthest coin
-        const nextStartZ = furthestCoinZ < -5 ? furthestCoinZ - 4.8 : -180
-        coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, 24))
+        const nextStartZ = furthestCoinZ < -5 ? furthestCoinZ - 4.8 : -190
+        const batchCount = 26
+        const startDist = coinRoadDistRef.current
+        coinRoadDistRef.current += batchCount * 4.8
+        coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, batchCount, startDist))
       }
 
       // Filter passed obstacles
