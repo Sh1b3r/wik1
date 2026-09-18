@@ -739,12 +739,13 @@ export default function SpeederGamePage() {
     const angle = baseAngle + (Math.random() * 0.7 + 0.1) * (Math.PI / 2)
 
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
-    const normDist = 0.10 + Math.sqrt(Math.random()) * 0.86
+    // Full screen coverage: from near center all the way to screen boundaries (0.05 to 0.98)
+    const normDist = 0.05 + Math.sqrt(Math.random()) * 0.93
     const x = Math.cos(angle) * (b.x * normDist)
     const y = Math.sin(angle) * (b.y * normDist)
 
-    // A logo arrives more frequently - every ~5-8 obstacles
-    const isLogo = spawnCounterRef.current >= 5 && Math.random() < 0.55
+    // Rare collectible Classic Space logo: arrives only every ~12-18 obstacles
+    const isLogo = spawnCounterRef.current >= 12 && Math.random() < 0.32
     if (isLogo) {
       spawnCounterRef.current = 0
       return {
@@ -914,8 +915,8 @@ export default function SpeederGamePage() {
     oneHitShieldRef.current = false // Reset one-hit shield on new game
 
     const initialList = []
-    for (let i = 0; i < 18; i++) {
-      initialList.push(generateObstacle(-18 - i * 9.5))
+    for (let i = 0; i < 24; i++) {
+      initialList.push(generateObstacle(-16 - i * 7.5))
     }
     obstaclesRef.current = initialList
     setDisplayObstacles([...initialList])
@@ -1340,10 +1341,10 @@ export default function SpeederGamePage() {
       // Filter passed obstacles
       obstaclesRef.current = obstaclesRef.current.filter((obs) => obs.z < 12)
 
-      // Keep the field dense and active across the full width.
-      while (obstaclesRef.current.length < 18) {
+      // Keep the field dense, lively, and frequent across the full width.
+      while (obstaclesRef.current.length < 24) {
         const furthestZ = obstaclesRef.current.reduce((min, o) => Math.min(min, o.z), 0)
-        obstaclesRef.current.push(generateObstacle(Math.min(-175, furthestZ - (7.5 + Math.random() * 4.5))))
+        obstaclesRef.current.push(generateObstacle(Math.min(-175, furthestZ - (5.5 + Math.random() * 3.5))))
       }
 
       frameCount++
