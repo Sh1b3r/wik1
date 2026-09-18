@@ -808,6 +808,7 @@ export default function SpeederGamePage() {
       for (let c = 0; c < candidates; c++) {
         const t = c / (candidates - 1) - 0.5
         const ang = desiredAngle + t * 1.7
+        const radFactor = THREE.MathUtils.clamp(desiredRadius + Math.sin(t * Math.PI) * 0.7, 0.15, 0.82)
         const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
         const cx = Math.cos(ang) * b.x * radFactor
         const cy = Math.sin(ang) * b.y * radFactor
