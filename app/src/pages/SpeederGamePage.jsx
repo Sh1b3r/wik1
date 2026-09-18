@@ -731,11 +731,12 @@ export default function SpeederGamePage() {
   // Track cumulative world distance for smooth, endless, non-repeating continuous highway generation
   const coinRoadDistRef = useRef(0)
 
-  // The Canonical Safe Highway Function: computes the exact (x, y) road center for any world distance s or z
-  // Uses multi-octave smooth sines that NEVER repeat or loop within normal play time
-  const getRoadPoint = (s, b) => {
-    const rx = Math.sin(s * 0.022) * (b.x * 0.65) + Math.sin(s * 0.0093 + 1.2) * (b.x * 0.22)
-    const ry = Math.cos(s * 0.019 + 0.4) * (b.y * 0.50) + Math.sin(s * 0.0076) * (b.y * 0.18)
+  // The Canonical Safe Highway Function: computes the exact (x, y) road center for any absolute worldZ
+  // Uses multi-frequency harmonious sines to create a glorious winding roller-coaster road that NEVER breaks
+  const getRoadPoint = (worldZ, b) => {
+    // worldZ advances forward as the player travels forward
+    const rx = Math.sin(worldZ * 0.022) * (b.x * 0.65) + Math.sin(worldZ * 0.0093 + 1.2) * (b.x * 0.22)
+    const ry = Math.cos(worldZ * 0.019 + 0.4) * (b.y * 0.50) + Math.sin(worldZ * 0.0076) * (b.y * 0.18)
     return {
       x: THREE.MathUtils.clamp(rx, -b.x * 0.82, b.x * 0.82),
       y: THREE.MathUtils.clamp(ry, -b.y * 0.76, b.y * 0.76),
@@ -743,9 +744,9 @@ export default function SpeederGamePage() {
   }
 
   // Generate a steady mix of asteroids and collectible Classic Space logos.
-  // CRITICAL RULE: Asteroids must NEVER spawn directly inside or on top of the coin road.
-  // They are placed outside a guaranteed 3.2-unit buffer from the road, ensuring the road is always 100% safe!
-  const generateObstacle = (z, roadDistanceApprox = 0) => {
+  // CRITICAL GUARANTEE: Asteroids must NEVER spawn directly inside or near the coin road corridor!
+  // Any asteroid closer than 3.6 units to the road is strictly pushed away to the sides.
+  const generateObstacle = (screenZ, currentWorldDist = 0) => {
     spawnCounterRef.current += 1
 
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
@@ -756,7 +757,7 @@ export default function SpeederGamePage() {
 
     const baseAngle = sector * (Math.PI / 2)
     const angle = baseAngle + (Math.random() * 0.7 + 0.15) * (Math.PI / 2)
-    const normDist = 0.25 + Math.sqrt(Math.random()) * 0.72
+    const normDist = 0.30 + Math.sqrt(Math.random()) * 0.65
     let x = Math.cos(angle) * (b.x * normDist)
     let y = Math.sin(angle) * (b.y * normDist)
 
@@ -765,18 +766,18 @@ export default function SpeederGamePage() {
       y = 1.3 + Math.random() * (b.y * 0.70)
     }
 
-    // STRICT ROAD CLEARANCE: Calculate road position at this z depth
-    // If obstacle is too close to the road corridor (< 3.2 units), push it away into the open flank!
-    const roadPt = getRoadPoint(roadDistanceApprox, b)
+    // Absolute worldZ of this obstacle
+    const obstacleWorldZ = currentWorldDist + Math.abs(screenZ)
+    const roadPt = getRoadPoint(obstacleWorldZ, b)
     const dX = x - roadPt.x
     const dY = y - roadPt.y
     const distToRoad = Math.hypot(dX, dY)
-    const minRoadBuffer = 3.25 // Generous buffer: ship radius (0.825) + asteroid radius (0.9) + 1.5 clearance
+    const minSafeCorridor = 3.65 // Ship radius (0.825) + asteroid radius (0.95) + 1.85 safety margin!
 
-    if (distToRoad < minRoadBuffer) {
-      const push = (minRoadBuffer - distToRoad) + 0.6
-      const nx = distToRoad > 0.001 ? dX / distToRoad : 1
-      const ny = distToRoad > 0.001 ? dY / distToRoad : 0
+    if (distToRoad < minSafeCorridor) {
+      const push = (minSafeCorridor - distToRoad) + 0.8
+      const nx = distToRoad > 0.001 ? dX / distToRoad : (Math.random() > 0.5 ? 1 : -1)
+      const ny = distToRoad > 0.001 ? dY / distToRoad : (Math.random() > 0.5 ? 1 : -1)
       x = THREE.MathUtils.clamp(x + nx * push, -b.x * 0.88, b.x * 0.88)
       y = THREE.MathUtils.clamp(y + ny * push, -b.y * 0.82, b.y * 0.82)
     }
@@ -831,22 +832,25 @@ export default function SpeederGamePage() {
 
   // Continuous Highway Path Generator for Gold LEGO Studs
   // Generates coins along the optimal road path getRoadPoint(s, b).
-  // Because asteroids are guaranteed to stay outside the 3.25-unit road buffer,
+  // Continuous Highway Path Generator for Gold LEGO Studs
+  // Generates coins along the optimal road path getRoadPoint(worldZ, b).
+  // Because asteroids are guaranteed to stay outside the 3.65-unit road buffer,
   // the player following this coin road can NEVER crash into an asteroid!
-  const generateCoinsAlongSafePath = (startZ, count = 24, startWorldDist = 0) => {
+  const generateCoinsAlongSafePath = (startZ, count = 24, currentTravelDist = 0) => {
     const newCoins = []
     const b = boundsRef.current || { x: CURRENT_BOUND_X, y: CURRENT_BOUND_Y }
     const stepZ = 4.8 // Consistent rhythmic step along the highway road
 
     for (let i = 0; i < count; i++) {
       const z = startZ - i * stepZ
-      const s = startWorldDist + i * stepZ
+      // Absolute world coordinate along the forward path
+      const worldZ = currentTravelDist + Math.abs(z)
 
-      const pt = getRoadPoint(s, b)
+      const pt = getRoadPoint(worldZ, b)
 
       newCoins.push({
         id: uniqueId(),
-        worldDist: s,
+        worldZ,
         x: pt.x,
         y: pt.y,
         z,
@@ -920,13 +924,12 @@ export default function SpeederGamePage() {
     const initialList = []
     for (let i = 0; i < 30; i++) {
       const z = -14 - i * 6.0
-      initialList.push(generateObstacle(z, Math.abs(z)))
+      initialList.push(generateObstacle(z, 0))
     }
     obstaclesRef.current = initialList
     setDisplayObstacles([...initialList])
 
     // Generate initial stream of gold studs immediately visible ahead in a long smooth arc
-    coinRoadDistRef.current = 28 * 4.8
     const initialCoins = generateCoinsAlongSafePath(-12, 28, 0)
     coinsRef.current = initialCoins
     setDisplayCoins([...initialCoins])
@@ -1220,6 +1223,28 @@ export default function SpeederGamePage() {
           obs.y = Math.sin(angle) * activeBounds.y
         }
 
+        // REAL-TIME CORRIDOR SHIELD: If this asteroid is near the screen play area (z > -80)
+        // ensure it NEVER encroaches on the coin highway.
+        if (!obs.isLogo && obs.z > -120) {
+          const currentObsWorldZ = distanceRef.current + Math.abs(obs.z)
+          const roadPt = getRoadPoint(currentObsWorldZ, activeBounds)
+          const dX = obs.x - roadPt.x
+          const dY = obs.y - roadPt.y
+          const dToRoad = Math.hypot(dX, dY)
+          const minCorridor = 3.65 // Absolute impenetrable safety buffer
+
+          if (dToRoad < minCorridor) {
+            const push = (minCorridor - dToRoad) + 0.5
+            const nx = dToRoad > 0.001 ? dX / dToRoad : 1
+            const ny = dToRoad > 0.001 ? dY / dToRoad : 0
+            obs.x += nx * push
+            obs.y += ny * push
+            // Reflect drift velocity away from road
+            if (obs.driftX * nx < 0) obs.driftX *= -1
+            if (obs.driftY * ny < 0) obs.driftY *= -1
+          }
+        }
+
         // Collision check
         if (obs.z > -1.1 && obs.z < 1.1) {
           const dx = obs.x - p.x
@@ -1344,9 +1369,7 @@ export default function SpeederGamePage() {
         // Continue trail seamlessly without any gaps, stepping exactly 4.8 units from the furthest coin
         const nextStartZ = furthestCoinZ < -5 ? furthestCoinZ - 4.8 : -190
         const batchCount = 26
-        const startDist = coinRoadDistRef.current
-        coinRoadDistRef.current += batchCount * 4.8
-        coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, batchCount, startDist))
+        coinsRef.current.push(...generateCoinsAlongSafePath(nextStartZ, batchCount, distanceRef.current))
       }
 
       // Filter passed obstacles
@@ -1356,9 +1379,8 @@ export default function SpeederGamePage() {
       while (obstaclesRef.current.length < 34) {
         const furthestZ = obstaclesRef.current.reduce((min, o) => Math.min(min, o.z), 0)
         const spawnZ = Math.min(-180, furthestZ - (3.6 + Math.random() * 2.8))
-        // Map spawnZ into the cumulative road distance so the asteroid is pushed away from the exact road position
-        const roadDistApprox = coinRoadDistRef.current + Math.abs(spawnZ)
-        obstaclesRef.current.push(generateObstacle(spawnZ, roadDistApprox))
+        // Pass distanceRef.current so the obstacle is strictly deflected away from the exact road position
+        obstaclesRef.current.push(generateObstacle(spawnZ, distanceRef.current))
       }
 
       frameCount++
