@@ -766,41 +766,65 @@ export default function SpeederGamePage() {
       y = 1.3 + Math.random() * (b.y * 0.70)
     }
 
-    // Absolute worldZ of this obstacle
+    // Absolute worldZ of this obstacle synchronized with the highway road
     const obstacleWorldZ = currentWorldDist + Math.abs(screenZ)
     const roadPt = getRoadPoint(obstacleWorldZ, b)
     const dX = x - roadPt.x
     const dY = y - roadPt.y
     const distToRoad = Math.hypot(dX, dY)
-    // Hitbox clearance: Player radius (0.825) + Coin pickup radius (1.2) + Max asteroid radius (1.05 * 0.81 = ~0.85) + safety padding (1.35)
-    // Ensures a 100% clear sanctuary corridor around the coin path where no asteroid can ever exist or hit the player
-    const minSafeCorridor = 4.25
+    // Hitbox clearance: Player radius (0.825) + Coin pickup radius (1.2) + Max asteroid radius (1.05 * 0.81 = ~0.85) + safety padding (2.3)
+    // Absolute clearance of 5.2 units guarantees asteroids NEVER stand on or obstruct the road corridor
+    const minSafeCorridor = 5.2
 
-    if (distToRoad < minSafeCorridor) {
-      const push = (minSafeCorridor - distToRoad) + 1.2
-      const nx = distToRoad > 0.001 ? dX / distToRoad : (Math.random() > 0.5 ? 1 : -1)
-      const ny = distToRoad > 0.001 ? dY / distToRoad : (Math.random() > 0.5 ? 1 : -1)
-      x = THREE.MathUtils.clamp(x + nx * push, -b.x * 0.88, b.x * 0.88)
-      y = THREE.MathUtils.clamp(y + ny * push, -b.y * 0.82, b.y * 0.82)
-    }
-
-    // Rare collectible Classic Space logo: arrives only every ~12-18 obstacles
-    const isLogo = spawnCounterRef.current >= 12 && Math.random() < 0.32
+    // Rare collectible Classic Space logo: arrives every ~10-15 obstacles
+    // Logos spawn right alongside the safe coin road (offset 0.8 - 1.5 units) so they are easy and natural to grab!
+    const isLogo = spawnCounterRef.current >= 10 && Math.random() < 0.35
     if (isLogo) {
       spawnCounterRef.current = 0
+      const sideAngle = Math.random() * Math.PI * 2
+      const logoRoadOffset = 0.8 + Math.random() * 0.7 // Snuggled close to the coin path!
+      const logoX = THREE.MathUtils.clamp(roadPt.x + Math.cos(sideAngle) * logoRoadOffset, -b.x * 0.85, b.x * 0.85)
+      const logoY = THREE.MathUtils.clamp(roadPt.y + Math.sin(sideAngle) * logoRoadOffset, -b.y * 0.80, b.y * 0.80)
+
       return {
         id: uniqueId(),
         isLogo: true,
         isTargeted: false,
         shapeType: -1,
         hitMultiplier: 0.85,
-        x,
-        y,
+        x: logoX,
+        y: logoY,
         z: screenZ,
         scale: 2.4,
         driftX: 0, // Keep path static and predictable
         driftY: 0,
         rotSpeed: { x: 0.25, y: 0.6 },
+      }
+    }
+
+    // STRICT ANTI-COLLISION: Asteroids must NEVER spawn inside or even graze the safe road!
+    if (distToRoad < minSafeCorridor) {
+      const push = (minSafeCorridor - distToRoad) + 1.2
+      // If asteroid spawned dead-center on the road, push away along a clear outward radial vector
+      let nx = dX
+      let ny = dY
+      if (distToRoad < 0.1) {
+        const fallbackAngle = Math.random() * Math.PI * 2
+        nx = Math.cos(fallbackAngle)
+        ny = Math.sin(fallbackAngle)
+      } else {
+        nx /= distToRoad
+        ny /= distToRoad
+      }
+
+      x = THREE.MathUtils.clamp(x + nx * push, -b.x * 0.90, b.x * 0.90)
+      y = THREE.MathUtils.clamp(y + ny * push, -b.y * 0.85, b.y * 0.85)
+
+      // Double-check: if clamped near boundary and still too close to road, push to the opposite side
+      const newDist = Math.hypot(x - roadPt.x, y - roadPt.y)
+      if (newDist < minSafeCorridor) {
+        x = THREE.MathUtils.clamp(roadPt.x - nx * (minSafeCorridor + 0.8), -b.x * 0.90, b.x * 0.90)
+        y = THREE.MathUtils.clamp(roadPt.y - ny * (minSafeCorridor + 0.8), -b.y * 0.85, b.y * 0.85)
       }
     }
 
@@ -1372,7 +1396,7 @@ export default function SpeederGamePage() {
         const furthestZ = obstaclesRef.current.reduce((min, o) => Math.min(min, o.z), 0)
         const spawnZ = Math.min(-180, furthestZ - (3.6 + Math.random() * 2.8))
         // Pass distanceRef.current so the obstacle is strictly deflected away from the exact road position
-        obstaclesRef.current.push(generateObstacle(spawnZ, distanceRef.current))
+        obstaclesRef.current.push(generateObstacle(spawnZ, highwayWorldDistRef.current))
       }
 
       frameCount++
