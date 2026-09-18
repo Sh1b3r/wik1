@@ -594,7 +594,7 @@ const BUFF_TYPES = [
     duration: 10,
     icon: '🚀',
     color: '#ef4444',
-    desc: 'Знищення найближчих астероїдів ракетами 10 секунд',
+    desc: 'Запуск по дві ракети одночасно для знищення астероїдів 10 секунд',
   },
   {
     key: 'Q',
@@ -772,10 +772,12 @@ export default function SpeederGamePage() {
     const dX = x - roadPt.x
     const dY = y - roadPt.y
     const distToRoad = Math.hypot(dX, dY)
-    const minSafeCorridor = 3.65 // Ship radius (0.825) + asteroid radius (0.95) + 1.85 safety margin!
+    // Hitbox clearance: Player radius (0.825) + Coin pickup radius (1.2) + Max asteroid radius (1.05 * 0.81 = ~0.85) + safety padding (1.35)
+    // Ensures a 100% clear sanctuary corridor around the coin path where no asteroid can ever exist or hit the player
+    const minSafeCorridor = 4.25
 
     if (distToRoad < minSafeCorridor) {
-      const push = (minSafeCorridor - distToRoad) + 0.8
+      const push = (minSafeCorridor - distToRoad) + 1.2
       const nx = distToRoad > 0.001 ? dX / distToRoad : (Math.random() > 0.5 ? 1 : -1)
       const ny = distToRoad > 0.001 ? dY / distToRoad : (Math.random() > 0.5 ? 1 : -1)
       x = THREE.MathUtils.clamp(x + nx * push, -b.x * 0.88, b.x * 0.88)
@@ -821,8 +823,8 @@ export default function SpeederGamePage() {
       y,
       z: screenZ,
       scale,
-      driftX: (Math.random() - 0.5) * 0.15, // Low drift so they don't migrate into the safe road
-      driftY: (Math.random() - 0.5) * 0.15,
+      driftX: 0, // Fixed position so asteroids never drift into the safe coin road
+      driftY: 0,
       rotSpeed: {
         x: (Math.random() - 0.5) * 1.5,
         y: (Math.random() - 0.5) * 1.5,
@@ -1054,7 +1056,7 @@ export default function SpeederGamePage() {
         }
 
         // curBuff.key === 'Q': vacuum pulls studs (coins) and logos within radius
-        // curBuff.key === 'Space': homing missiles (fires 1 missile at closest threat with unlimited range)
+        // curBuff.key === 'Space': homing missiles (fires TWO missiles at a time at closest threats)
         if (curBuff.key === 'Space') {
           missileFireCooldownRef.current -= dt
           if (missileFireCooldownRef.current <= 0) {
@@ -1076,16 +1078,19 @@ export default function SpeederGamePage() {
                 return distA - distB
               })
 
-              // Pick 1 closest asteroid
-              const target = eligible[0]
+              // Fire two rockets at a time
+              const targets = eligible.slice(0, 2)
+              const wingOffsets = [-0.45, 0.45]
 
-              target.isTargeted = true
-              missilesRef.current.push({
-                id: uniqueId(),
-                x: playerRef.current.x,
-                y: playerRef.current.y - 0.1,
-                z: -0.5,
-                targetId: target.id,
+              targets.forEach((target, idx) => {
+                target.isTargeted = true
+                missilesRef.current.push({
+                  id: uniqueId(),
+                  x: playerRef.current.x + (wingOffsets[idx] !== undefined ? wingOffsets[idx] : 0),
+                  y: playerRef.current.y - 0.1,
+                  z: -0.5,
+                  targetId: target.id,
+                })
               })
             }
           }
@@ -1206,12 +1211,17 @@ export default function SpeederGamePage() {
       // - AND no buff is currently active with running timer (`!activeBuffRef.current`)
       const canCollectNewLogo = !collectedBuffRef.current && !activeBuffRef.current
 
+      // When rocket ability or missiles are active, freeze asteroid lateral shifting so they don't change position
+      const isMissileAbilityActive = (activeBuffRef.current && activeBuffRef.current.key === 'Space') || missilesRef.current.length > 0
+
       for (let i = 0; i < obstaclesRef.current.length; i++) {
         const obs = obstaclesRef.current[i]
 
         obs.z += currentSpeed * dt
-        obs.x += obs.driftX * dt
-        obs.y += obs.driftY * dt
+        if (!isMissileAbilityActive) {
+          obs.x += obs.driftX * dt
+          obs.y += obs.driftY * dt
+        }
 
         const obsNormX = obs.x / activeBounds.x
         const obsNormY = obs.y / activeBounds.y
